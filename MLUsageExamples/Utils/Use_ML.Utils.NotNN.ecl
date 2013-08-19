@@ -5,6 +5,7 @@
    then a_string is returned.
 
 */
+/* MODIFIED */
 
   IMPORT ML;
   s2:='There are three spaces ';

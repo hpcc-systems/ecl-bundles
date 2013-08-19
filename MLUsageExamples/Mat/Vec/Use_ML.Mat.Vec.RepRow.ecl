@@ -19,7 +19,7 @@
 
   M2 := ML.Mat.Vec.RepRow(M,V,3);
   OUTPUT(M2,NAMED('M2'));
-  <?dbfo-need height="1.7in" ?>
+  
   /*
     M2's content   
   x   y   value  

@@ -3,6 +3,7 @@
    function given positive_number.
 
 */
+/* MODIFIED */
 
    IMPORT ML;
 

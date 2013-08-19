@@ -13,6 +13,7 @@
    to Information Retrieval" by C.D. Manning, et al.
 
 */
+/* MODIFIED */
 
   IMPORT ML;
   IMPORT ML.Docs;

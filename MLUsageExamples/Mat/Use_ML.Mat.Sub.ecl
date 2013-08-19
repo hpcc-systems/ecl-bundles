@@ -18,7 +18,7 @@
 
    SubAB := ML.Mat.Sub(A,B);
    OUTPUT(SubAB,NAMED('SubAB'));
-   <?dbfo-need height="1.7in" ?>
+   
    /*
     Contents of SubAB  
    x   y   value  

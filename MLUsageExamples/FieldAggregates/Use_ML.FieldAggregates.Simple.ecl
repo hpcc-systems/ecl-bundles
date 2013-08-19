@@ -10,7 +10,7 @@
    ML.ToField(Chicks,NumericField_Chicks);
    Simple_ChicksStatistics:=ML.FieldAggregates(NumericField_Chicks).Simple;
    OUTPUT(Simple_ChicksStatistics);
-   <?dbfo-need height="1.0in" ?>
+   
    /*
                         Output of Simple_ChicksStatistics                     
   number   Minval   Maxval   Sumval   Countval   Mean     Var       sd     

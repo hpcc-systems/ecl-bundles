@@ -18,7 +18,7 @@
 
    MulAB := ML.Mat.Each.Mul(A,B);
    OUTPUT(MulAB,NAMED('MulAB'));
-   <?dbfo-need height="1.7in" ?>
+   
    /*
     Contents of MulAB  
    x   y   value  

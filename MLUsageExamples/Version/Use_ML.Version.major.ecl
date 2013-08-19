@@ -3,6 +3,7 @@
    is the major number of versionString.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 OUTPUT(ML.Version.major,NAMED('major'));

@@ -3,6 +3,7 @@
    K elements out of a possible N.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 combinations := ML.Utils.NCK(5,2);

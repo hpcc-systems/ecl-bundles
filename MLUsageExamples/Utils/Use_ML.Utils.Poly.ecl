@@ -5,6 +5,7 @@
    <ulink url="http://en.wikipedia.org/wiki/Stirling%27s_approximation">http://en.wikipedia.org/wiki/Stirling%27s_approximation</ulink>
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 <emphasis>Coeffs</emphasis> := [1,2,3];

@@ -9,6 +9,7 @@
    divided by N.
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    IMPORT * FROM ML.Types;

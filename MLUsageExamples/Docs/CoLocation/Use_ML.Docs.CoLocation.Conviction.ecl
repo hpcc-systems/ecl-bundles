@@ -5,6 +5,7 @@
    it is (1 - Support(SetOfNGrams2) / (1 - Confidence(SetOfNGrams1,SetOfNGrams2)
 
 */
+/* MODIFIED */
 
   IMPORT ML;
   IMPORT ML.Docs.Types;

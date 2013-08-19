@@ -3,6 +3,7 @@
    like OUTPUT, produces three files, tf_idf, WordBag and WordsCounted
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 IMPORT ML.Docs AS Docs;

@@ -7,6 +7,7 @@
    is even.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 odd_double_factorial := ML.Utils.DoubleFac(5);

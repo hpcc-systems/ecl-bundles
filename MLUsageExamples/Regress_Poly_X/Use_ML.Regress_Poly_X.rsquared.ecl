@@ -3,6 +3,7 @@ No description found.
 */
 
    // Example given in Machine Learning Library Reference
+/* MODIFIED */
    IMPORT ML;
    R := RECORD
    INTEGER rid;

@@ -6,6 +6,7 @@
    the word totals and counts calculated by ML.Docs.Trans.WordBag.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 IMPORT ML.Docs AS Docs;

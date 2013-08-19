@@ -5,6 +5,7 @@
    This is used by some of the matrix functions)
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 OUTPUT(ML.Config.RoundingError,NAMED('RoundingError'));

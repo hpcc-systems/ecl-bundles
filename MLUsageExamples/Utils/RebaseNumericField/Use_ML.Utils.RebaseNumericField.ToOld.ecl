@@ -3,6 +3,7 @@
    using mapping back to the original base.
 
 */
+/* MODIFIED */
 
    IMPORT ML;
    value_record := RECORD

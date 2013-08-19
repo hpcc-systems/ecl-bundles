@@ -37,7 +37,7 @@ No description found.
                      ,SELF.extrapo:=RIGHT.value
           )
     );
-    <?dbfo-need height="2.1in" ?>
+    
     /*
              JOIN produces the following:         
   id   actual              extrapo            

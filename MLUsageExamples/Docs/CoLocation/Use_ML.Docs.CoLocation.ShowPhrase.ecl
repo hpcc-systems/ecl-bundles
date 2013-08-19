@@ -5,6 +5,7 @@
    where each word_id is replaced with the equivalent word.
 
 */
+/* MODIFIED */
 
   IMPORT ML;
   IMPORT ML.Docs.Types;

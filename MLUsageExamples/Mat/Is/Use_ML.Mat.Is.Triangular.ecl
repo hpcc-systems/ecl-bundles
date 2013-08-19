@@ -3,6 +3,7 @@
    is a Triangular matrix. Otherwise it returns false.
 
 */
+/* MODIFIED */
 
 
    IMPORT * FROM ML;

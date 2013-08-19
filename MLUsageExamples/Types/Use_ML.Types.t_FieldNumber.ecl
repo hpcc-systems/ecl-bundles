@@ -3,6 +3,7 @@
    type (currently defined as UNSIGNED4)
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Types.t_FieldNumber classifier;

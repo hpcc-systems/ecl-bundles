@@ -14,7 +14,7 @@
 
    ReciprocalA1 := ML.Mat.Each.Reciprocal(A,1);
    OUTPUT(ReciprocalA1,NAMED('ReciprocalA1'));
-   <?dbfo-need height="1.7in" ?>
+   
    /*
        Contents of ReciprocalA1      
          x   y   value  

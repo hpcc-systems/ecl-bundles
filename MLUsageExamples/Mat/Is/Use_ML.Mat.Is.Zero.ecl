@@ -3,6 +3,7 @@
    is a Zero matrix. Otherwise it returns false.
 
 */
+/* MODIFIED */
 
 
    IMPORT * FROM ML;

@@ -20,7 +20,7 @@
 
   D := ML.Mat.Vec.FromDiag(A);
   OUTPUT(D,NAMED('D'));
-  <?dbfo-need height="1.0in" ?>
+  
   /*
      D's content   
   x   y   value  
@@ -43,7 +43,7 @@
 
   D2 := ML.Mat.Vec.FromDiag(A2,1);
   OUTPUT(D2,NAMED('D2'));
-  <?dbfo-need height="1.0in" ?>
+  
   /*
     D2's content   
   x   y   value  

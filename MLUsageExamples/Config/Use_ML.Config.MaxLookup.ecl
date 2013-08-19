@@ -3,6 +3,7 @@
    which is the maximum allowed lookup data.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 OUTPUT(ML.Config.MaxLookup,NAMED('MaxLookup'));

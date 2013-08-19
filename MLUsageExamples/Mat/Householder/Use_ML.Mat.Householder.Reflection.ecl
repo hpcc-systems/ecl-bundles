@@ -20,7 +20,7 @@
    OUTPUT(V,NAMED('V'));
 
    ML.Mat.Householder(V,3).Reflection();
-   <?dbfo-need height="1.2in" ?>
+   
    /*
          Householder Reflection of V       
              x   y   value  

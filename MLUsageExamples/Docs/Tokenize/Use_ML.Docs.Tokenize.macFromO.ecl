@@ -5,6 +5,7 @@
    of the word whose fixed length unique identifier is idfield.
 
 */
+/* MODIFIED */
 
   IMPORT ML;
   IMPORT ML.Docs.Types;

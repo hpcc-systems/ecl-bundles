@@ -3,6 +3,7 @@
    is the minor number of versionString.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 OUTPUT(ML.Version.minor,NAMED('minor'));

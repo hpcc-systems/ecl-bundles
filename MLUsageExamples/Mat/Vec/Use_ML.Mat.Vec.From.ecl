@@ -13,7 +13,7 @@
  v1 := ML.Mat.Vec.From(10);
 
  OUTPUT(v1);
- <?dbfo-need height="1.8in" ?>
+ 
  /*
     v1's content   
   x    y   value  
@@ -34,7 +34,7 @@
  v2 := ML.Mat.Vec.From(10,5.0);
 
  OUTPUT(v2);
- <?dbfo-need height="1.8in" ?>
+ 
  /*
     v2's content   
   x    y   value  

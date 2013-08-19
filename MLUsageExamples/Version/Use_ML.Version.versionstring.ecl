@@ -3,6 +3,7 @@
    'major+' '+minor+' '+point+'-'+sequence+maturity'
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 OUTPUT(ML.Version.versionString,NAMED('versionString'));

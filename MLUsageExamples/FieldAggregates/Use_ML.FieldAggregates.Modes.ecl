@@ -10,7 +10,7 @@
    Iris := ML.Tests.Deprecated.IrisPlantDS;
    ML.ToField(Iris,NF_Iris);
    OUTPUT(ML.FieldAggregates(NF_Iris).modes);
-   <?dbfo-need height="1.4in" ?>
+   
    /*
      NF_Iris Modes     
   number   mode   cnt  

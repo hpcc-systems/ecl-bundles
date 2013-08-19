@@ -4,6 +4,7 @@
    ToNew) and then return it to the original base (using ToOld)
 
 */
+/* MODIFIED */
 
    IMPORT ML;
    value_record := RECORD

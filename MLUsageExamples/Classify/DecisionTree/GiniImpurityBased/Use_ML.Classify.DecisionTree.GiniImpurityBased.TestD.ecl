@@ -7,6 +7,7 @@
    Classify.Compare.
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    IMPORT ML.Mat;

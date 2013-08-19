@@ -6,6 +6,7 @@
    + SetOfNGrams2) divided by Support(SetOfNGrams1)
 
 */
+/* MODIFIED */
 
   IMPORT ML;
   IMPORT ML.Docs.Types;

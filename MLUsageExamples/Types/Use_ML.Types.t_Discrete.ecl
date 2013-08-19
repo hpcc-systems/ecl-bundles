@@ -3,6 +3,7 @@
    type (currently defined as integer4)
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Types.t_Discrete class;

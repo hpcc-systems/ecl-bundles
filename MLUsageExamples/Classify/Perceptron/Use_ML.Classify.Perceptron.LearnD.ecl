@@ -7,6 +7,7 @@
 
    //Perceptron Example
    // Shows the perceptron following the steps of the Wikipedia example on perceptrons
+/* MODIFIED */
    IMPORT ML;
    d := 
       DATASET([

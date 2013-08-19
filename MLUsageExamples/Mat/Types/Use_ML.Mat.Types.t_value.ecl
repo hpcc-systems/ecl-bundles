@@ -3,6 +3,7 @@
    REAL value type (currently defined as REAL8)
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Mat.Types.t_value value;

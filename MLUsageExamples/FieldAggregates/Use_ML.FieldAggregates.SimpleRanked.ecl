@@ -6,6 +6,7 @@
    of the value of the numeric field.
 
 */
+/* MODIFIED */
 
 
 IMPORT ML;

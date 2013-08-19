@@ -3,6 +3,7 @@
    by ML.Docs functions.
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Docs.Types.Raw aDocument;

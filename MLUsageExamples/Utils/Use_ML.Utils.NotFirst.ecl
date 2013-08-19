@@ -4,6 +4,7 @@
    returned.
 
 */
+/* MODIFIED */
 
   IMPORT ML;
   s0:='The first has';

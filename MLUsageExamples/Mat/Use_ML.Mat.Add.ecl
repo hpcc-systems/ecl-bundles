@@ -18,7 +18,7 @@
 
    AddAB := ML.Mat.Add(A,B);
    OUTPUT(AddAB,NAMED('AddAB'));
-   <?dbfo-need height="1.7in" ?>
+   
    /*
     Contents of AddAB  
    x   y   value  

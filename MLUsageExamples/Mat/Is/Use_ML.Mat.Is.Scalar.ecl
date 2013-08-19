@@ -3,6 +3,7 @@
    is a Scalar matrix. Otherwise it returns false.
 
 */
+/* MODIFIED */
 
 
    IMPORT * FROM ML;

@@ -3,6 +3,7 @@
    type (currently defined as UNSIGNED4)
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Mat.Types.t_Index x;

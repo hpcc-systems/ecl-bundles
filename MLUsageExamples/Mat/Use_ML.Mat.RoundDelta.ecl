@@ -14,7 +14,7 @@
 
    RoundDeltaA := ML.Mat.RoundDelta(A,0.2);
    OUTPUT(RoundDeltaA,NAMED('RoundDeltaA'));
-   <?dbfo-need height="1.7in" ?>
+   
    /*
        Contents of RoundDeltaA     
          x   y   value  

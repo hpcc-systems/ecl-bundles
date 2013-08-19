@@ -13,7 +13,7 @@
 
    SqrtA := ML.Mat.Each.Sqrt(A);
    OUTPUT(SqrtA,NAMED('SqrtA'));
-   <?dbfo-need height="1.7in" ?>
+   
    /*
     Contents of SqrtA  
    x   y   value  

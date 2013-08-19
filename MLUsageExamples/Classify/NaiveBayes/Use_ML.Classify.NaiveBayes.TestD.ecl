@@ -8,6 +8,7 @@
 */
 
    //NaiveBayesExampleCode.ecl
+/* MODIFIED */
    IMPORT ML;
 
    // First auto-generate some test data for us to classify

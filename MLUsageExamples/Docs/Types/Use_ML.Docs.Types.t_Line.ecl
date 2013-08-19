@@ -3,6 +3,7 @@
    (currently defined as STRING)
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Docs.Types.t_Line Support;

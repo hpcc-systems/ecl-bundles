@@ -3,6 +3,7 @@
    a matrix for use by ML.Mat functions.
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Mat.Types.Element matrix;

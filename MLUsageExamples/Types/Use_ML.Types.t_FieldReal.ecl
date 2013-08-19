@@ -3,6 +3,7 @@
    (currently defined as REAL8)
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Types.t_FieldReal score;

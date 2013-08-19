@@ -3,6 +3,7 @@
    which is the sequence number of versionString.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 OUTPUT(ML.Version.sequence,NAMED('sequence'));

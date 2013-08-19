@@ -3,6 +3,7 @@
    is the point number of versionString.
 
 */
+/* MODIFIED */
 
 IMPORT ML;
 OUTPUT(ML.Version.point,NAMED('point'));

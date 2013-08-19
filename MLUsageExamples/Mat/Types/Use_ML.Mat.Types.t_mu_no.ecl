@@ -3,6 +3,7 @@
    type (currently defined as UNSIGNED2)
 
 */
+/* MODIFIED */
 
    IMPORT * FROM ML;
    ML.Mat.Types.t_mu_no no;
