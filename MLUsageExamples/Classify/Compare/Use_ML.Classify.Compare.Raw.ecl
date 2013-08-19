@@ -7,6 +7,7 @@
 */
 
      //classify_compare_code_example.ecl
+/* MODIFIED */
    IMPORT ML;
    // First auto-generate some test data for us to classify
    TestSize := 100000;
