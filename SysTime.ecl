@@ -41,7 +41,9 @@ EXPORT	SysTime := MODULE,FORWARD
 	END;
 	
 	/***************************************************************************
-	 * Enumeration of fields defined in struct tm.
+	 * Enumeration of fields defined in struct tm.  Please see man page for
+	 * a time-oriented system call (e.g. localtime()) for more information
+	 * about the values associated with these fields.
 	 *
 	 * @see	TMDict
 	 **************************************************************************/
@@ -128,7 +130,7 @@ EXPORT	SysTime := MODULE,FORWARD
 			INTEGER2	v;
 		END;
 		
-		// Embedded C++ function to make the system call
+		// Private C++ function to make the system call
 		DATASET(TMRec) _MakeTimeParts(UNSIGNED4 the_time, BOOLEAN use_local) := BEGINC++
 			#option pure
 			#include <time.h>
@@ -208,6 +210,7 @@ EXPORT	SysTime := MODULE,FORWARD
 	EXPORT	UNSIGNED4 MakeTimeInSecondsFromTMDict(TMDict time_parts,
 												  BOOLEAN as_local_time = FALSE) := FUNCTION
 		
+		// Private C++ function to make the system call
 		UNSIGNED4 _ConvertTime(INTEGER2 seconds,
 							   INTEGER2 minutes,
 							   INTEGER2 hours,
@@ -366,6 +369,7 @@ EXPORT	SysTime := MODULE,FORWARD
 	EXPORT	Std.Date.Date_t DateFromTimeInSeconds(UNSIGNED4 time_in_seconds,
 												  BOOLEAN as_local_time = FALSE) := FUNCTION
 		
+		// Private C++ function to make the system call
 		UNSIGNED4 _MakeDate(UNSIGNED4 the_time, BOOLEAN use_local) := BEGINC++
 			#option pure
 			#include <time.h>
