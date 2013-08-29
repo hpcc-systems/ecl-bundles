@@ -570,3 +570,48 @@ EXPORT	SysTime := MODULE,FORWARD
 	ENDC++;
 
 END;	// SysTime Module
+
+/*******************************************************************************
+// Example ECL
+
+IMPORT SysTime;
+
+timeNow := SysTime.CurrentUTCTimeInSeconds();
+
+OUTPUT(timeNow,NAMED('CurrentUTCTimeInSeconds'));
+
+OUTPUT(SysTime.CurrentUTCTimeInSecondsWithPrecision(),NAMED('CurrentUTCTimeInSecondsWithPrecision'));
+
+OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=FALSE),NAMED('FormattedTimeUTC'));
+
+OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=TRUE),NAMED('FormattedTimeLocal'));
+
+struct1 := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=FALSE);
+OUTPUT(struct1,NAMED('MakeTMStructFromTimeInSecondsUTC'));
+
+time1 := SysTime.MakeTimeInSecondsFromTMDict(struct1);
+OUTPUT(time1,NAMED('MakeTimeInSecondsFromTMStruct1'));
+
+struct2 := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=TRUE);
+OUTPUT(struct2,NAMED('MakeTMStructFromTimeInSecondsLocal'));
+
+time2 := SysTime.MakeTimeInSecondsFromTMDict(struct2);
+OUTPUT(time2,NAMED('MakeTimeInSecondsFromTMStruct2'));
+
+OUTPUT(SysTime.DateFromTimeInSeconds(timeNow),NAMED('DateFromTimeInSeconds'));
+
+theDate := SysTime.CurrentDate();
+OUTPUT(theDate,NAMED('CurrentDate'));
+
+OUTPUT(SysTime.CurrentISODate(),NAMED('CurrentISODate'));
+
+OUTPUT(SysTime.LocalTimeZoneOffset(),NAMED('LocalTimeZoneOffset'));
+
+OUTPUT(SysTime.LocalTimeZoneOffsetInSeconds(),NAMED('LocalTimeZoneOffsetInSeconds'));
+
+deltaTime := SysTime.AdjustTimeInSeconds(timeNow,delta_days:=1);
+OUTPUT(deltaTime,NAMED('AdjustTimeInSecondsOneDayForward'));
+
+OUTPUT(SysTime.AdjustDate(theDate,delta_days:=1),NAMED('AdjustDate'));
+
+*******************************************************************************/
