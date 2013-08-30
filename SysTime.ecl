@@ -1,4 +1,14 @@
-﻿IMPORT Std;
+﻿/*******************************************************************************
+ * SysTime.ecl
+ * 
+ * Useful time- and date-oriented utilities.
+ * 
+ * Copyright (C) 2013, Dun & Bradstreet
+ * 
+ * File best viewed with tab = 4 spaces
+ ******************************************************************************/
+
+IMPORT Std;
 
 EXPORT	SysTime := MODULE,FORWARD
 	
@@ -637,8 +647,8 @@ OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=FALSE),NAMED('FormattedTimeU
 OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=TRUE),NAMED('FormattedTimeLocal'));
 // 2013-08-30T06:53:57
 
-struct1 := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=FALSE);
-OUTPUT(struct1,NAMED('MakeTMStructFromTimeInSecondsUTC'));
+timeDictUTC := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=FALSE);
+OUTPUT(timeDictUTC,NAMED('MakeTMStructFromTimeInSecondsUTC'));
 //	##	f	v
 //	1	9	0
 //	2	6	113
@@ -653,12 +663,11 @@ OUTPUT(struct1,NAMED('MakeTMStructFromTimeInSecondsUTC'));
 OUTPUT(SysTime.MakeTimeInSecondsFromTimeParts(2013,1,1,6,0,0),NAMED('MakeTimeInSecondsFromTimeParts20130101'));
 // 1357020000
 
-time1 := SysTime.MakeTimeInSecondsFromTMDict(struct1);
-OUTPUT(time1,NAMED('MakeTimeInSecondsFromTMStruct1'));
+OUTPUT(SysTime.MakeTimeInSecondsFromTMDict(timeDictUTC),NAMED('MakeTimeInSecondsFromTMStructUTC'));
 // 1377863637
 
-struct2 := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=TRUE);
-OUTPUT(struct2,NAMED('MakeTMStructFromTimeInSecondsLocal'));
+timeDictLocal := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=TRUE);
+OUTPUT(timeDictLocal,NAMED('MakeTMStructFromTimeInSecondsLocal'));
 //	##	f	v
 //	1	9	1
 //	2	6	113
@@ -670,15 +679,16 @@ OUTPUT(struct2,NAMED('MakeTMStructFromTimeInSecondsLocal'));
 //	8	5	7
 //	9	2	53
 
-time2 := SysTime.MakeTimeInSecondsFromTMDict(struct2);
-OUTPUT(time2,NAMED('MakeTimeInSecondsFromTMStruct2'));
+OUTPUT(SysTime.MakeTimeInSecondsFromTMDict(timeDictLocal),NAMED('MakeTimeInSecondsFromTMStructLocal'));
 // 1377845637
+
+OUTPUT(SysTime.TM(timeDictLocal).Year,NAMED('YearFromTMStructLocal'));
+// 2013
 
 OUTPUT(SysTime.DateFromTimeInSeconds(timeNow),NAMED('DateFromTimeInSeconds'));
 // 20130830
 
-theDate := SysTime.CurrentDate();
-OUTPUT(theDate,NAMED('CurrentDate'));
+OUTPUT(SysTime.CurrentDate(),NAMED('CurrentDate'));
 // 20130830
 
 OUTPUT(SysTime.CurrentISODate(),NAMED('CurrentISODate'));
@@ -694,7 +704,7 @@ deltaTime := SysTime.AdjustTimeInSeconds(timeNow,delta_days:=1);
 OUTPUT(deltaTime,NAMED('AdjustTimeInSecondsOneDayForward'));
 // 1377950037
 
-OUTPUT(SysTime.AdjustDate(theDate,delta_days:=1),NAMED('AdjustDate'));
-// 20130831
+OUTPUT(SysTime.AdjustDate(20131231,delta_days:=1),NAMED('AdjustDate'));
+// 20140101
 
 *******************************************************************************/
