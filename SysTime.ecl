@@ -3,16 +3,20 @@
 EXPORT	SysTime := MODULE,FORWARD
 	
 	/***************************************************************************
-	 * Export Types and Data Structures
+	 * Exported Types and Data Structures
 	 *
+	 *	- Time_t				Type representing the number of seconds
+	 *							since epoch (UTC).
 	 *	- TMField (ENUM)		Individual enum values that map to the fields
 	 *							used in the system's tm struct.
 	 *	- TMDict (DICTIONARY)	Collection of TMField enums and their values.
 	 * 
-	 * Exported functions
+	 * Exported Functions
 	 *
 	 * 	- CurrentUTCTimeInSeconds
+	 *	- CurrentUTCTimeInSecondsWithPrecision
 	 *	- MakeTMDictFromTimeInSeconds
+	 *	- MakeTimeInSecondsFromTimeParts
 	 *	- MakeTimeInSecondsFromTMDict
 	 *	- FormattedTime
 	 *	- DateFromTimeInSeconds
@@ -24,7 +28,19 @@ EXPORT	SysTime := MODULE,FORWARD
 	 *	- AdjustTimeInSeconds
 	 *	- AdjustDate
 	 *
-	 * @see	TMDict
+	 * Exported Modules
+	 *
+	 *	- TM					Pass in a TMDict and use exported attributes
+	 *							to more easily pick out discrete values
+	 *		- Year						Four-digit year
+	 *		- MonthNum					1-12
+	 *		- Day						1-31
+	 *		- Hour						0-23
+	 *		- Minute					0-59
+	 *		- Second					0-59
+	 *		- DayOfWeekNum				0-6 (0 = Sunday)
+	 *		- DayOfYearNum				0-365 (0 = January 1)
+	 *		- IsDaylightSavingsTime		TRUE | FALSE
 	 **************************************************************************/
 	
 	/***************************************************************************
@@ -49,16 +65,16 @@ EXPORT	SysTime := MODULE,FORWARD
 	 **************************************************************************/
 	EXPORT	TMField := ENUM
 		(
-			UNSIGNED2,
-			tm_sec = 1,
-			tm_min,
-			tm_hour,
-			tm_mday,
-			tm_mon,
-			tm_year,
-			tm_wday,
-			tm_yday,
-			tm_isdst
+			UNSIGNED2,		// VALUES
+			tm_sec = 1,		// 0-59 (could be 60 if leap seconds involved)
+			tm_min,			// 0-59
+			tm_hour,		// 0-23
+			tm_mday,		// 1-31
+			tm_mon,			// 0-11
+			tm_year,		// (Number of years since 1900)
+			tm_wday,		// 0-6, 0 = Sunday
+			tm_yday,		// 0-365, 0 = Jan. 1
+			tm_isdst		// >0 = true, 0 = false, -1 = not available
 		);
 	
 	/***************************************************************************
@@ -67,11 +83,31 @@ EXPORT	SysTime := MODULE,FORWARD
 	EXPORT	TMDict := DICTIONARY({TMField f => INTEGER2 v});
 	
 	/***************************************************************************
+	 * Module for easier (and more readable) access to TMDict values
+	 **************************************************************************/
+	EXPORT	TM(TMDict tmValues) := MODULE
+		EXPORT	Year := tmValues[TMField.tm_year].v + 1900;
+		EXPORT	MonthNum := tmValues[TMField.tm_mon].v + 1;
+		EXPORT	Day := tmValues[TMField.tm_mday].v;
+		EXPORT	Hour := tmValues[TMField.tm_hour].v;
+		EXPORT	Minute := tmValues[TMField.tm_min].v;
+		EXPORT	Second := tmValues[TMField.tm_sec].v;
+		EXPORT	DayOfWeekNum := tmValues[TMField.tm_wday].v;
+		EXPORT	DayOfYearNum := tmValues[TMField.tm_yday].v;
+		EXPORT	IsDaylightSavingsTime := (tmValues[TMField.tm_isdst].v > 0);
+	END;
+	
+	/***************************************************************************
+	 * Typedef representing number of seconds since epoch (UTC)
+	 **************************************************************************/
+	EXPORT	Time_t := UNSIGNED4;
+	
+	/***************************************************************************
 	 * Current UTC time in seconds.
 	 * 
 	 * @return	The current UTC time in seconds since epoch.
 	 **************************************************************************/
-	EXPORT	UNSIGNED4 CurrentUTCTimeInSeconds() := BEGINC++
+	EXPORT	Time_t CurrentUTCTimeInSeconds() := BEGINC++
 		#option pure
 		#option action
 		#include <time.h>
@@ -122,7 +158,7 @@ EXPORT	SysTime := MODULE,FORWARD
 	 * 
 	 * @return					DATASET(TMDict) containing only one record.
 	 **************************************************************************/
-	EXPORT	TMDict MakeTMDictFromTimeInSeconds(UNSIGNED4 time_in_seconds,
+	EXPORT	TMDict MakeTMDictFromTimeInSeconds(Time_t time_in_seconds,
 											   BOOLEAN as_local_time = FALSE) := FUNCTION
 		
 		TMRec := RECORD
@@ -131,7 +167,7 @@ EXPORT	SysTime := MODULE,FORWARD
 		END;
 		
 		// Private C++ function to make the system call
-		DATASET(TMRec) _MakeTimeParts(UNSIGNED4 the_time, BOOLEAN use_local) := BEGINC++
+		DATASET(TMRec) _MakeTimeParts(Time_t the_time, BOOLEAN use_local) := BEGINC++
 			#option pure
 			#include <time.h>
 			#body
@@ -194,6 +230,88 @@ EXPORT	SysTime := MODULE,FORWARD
 	END;
 	
 	/***************************************************************************
+	 * Given date and time values, return the equivalent time in seconds
+	 * since epoch (UTC).
+	 *
+	 * @param	year
+	 * @param	month
+	 * @param	day
+	 * @param	hours
+	 * @param	minutes
+	 * @param	seconds
+	 * @param	isdst
+	 * @param	as_local_time	If TRUE, the values are interpreted as local
+	 *							time rather than UTC time.  Optional;
+	 *							defaults to FALSE.
+	 * 
+	 * @return					The time in seconds since epoch (UTC).
+	 **************************************************************************/
+	EXPORT	Time_t MakeTimeInSecondsFromTimeParts(INTEGER2 year = 0,
+												  INTEGER2 month = 0,
+												  INTEGER2 day = 0,
+												  INTEGER2 hours = 0,
+												  INTEGER2 minutes = 0,
+												  INTEGER2 seconds = 0,
+												  INTEGER2 isdst = 0,
+												  BOOLEAN as_local_time = FALSE) := BEGINC++
+		#option pure
+		#include <time.h>
+		#body
+	
+		struct tm	timeInfo;
+		time_t		the_time;
+		
+		// Push each time part value into the tm struct
+		timeInfo.tm_sec = seconds;
+		timeInfo.tm_min = minutes;
+		timeInfo.tm_hour = hours;
+		timeInfo.tm_mday = day;
+		timeInfo.tm_mon = month - 1;
+		timeInfo.tm_year = year - 1900;
+		timeInfo.tm_wday = 0;
+		timeInfo.tm_yday = 0;
+		timeInfo.tm_isdst = isdst;
+		
+		// Convert time parts to 'time since epoch' differently, depending
+		// on whether the time parts were originally local or UTC
+		if (as_local_time)
+		{
+			the_time = mktime(&timeInfo);
+		}
+		else
+		{
+			char*				tz = NULL;
+			const char*			tzName = "TZ";
+			pthread_mutex_t		getEnvMutex = PTHREAD_MUTEX_INITIALIZER;
+			
+			// Mutex stuff required because env manipulation is not
+			// thread safe
+			
+			pthread_mutex_lock(&getEnvMutex);
+	
+			tz = getenv(tzName);
+			setenv(tzName,"",1);
+			tzset();
+			
+			the_time = mktime(&timeInfo);
+			
+			if (tz)
+			{
+				setenv(tzName,tz,1);
+			}
+			else
+			{
+				unsetenv(tzName);
+			}
+			tzset();
+	
+			pthread_mutex_unlock(&getEnvMutex);
+		}
+		
+		return the_time;
+	ENDC++;
+	
+	/***************************************************************************
 	 * Converts a TMDict record, which contains individual time components,
 	 * to a UTC time.
 	 *
@@ -207,89 +325,16 @@ EXPORT	SysTime := MODULE,FORWARD
 	 * 
 	 * @return					The time in seconds since epoch (UTC).
 	 **************************************************************************/
-	EXPORT	UNSIGNED4 MakeTimeInSecondsFromTMDict(TMDict time_parts,
-												  BOOLEAN as_local_time = FALSE) := FUNCTION
-		
-		// Private C++ function to make the system call
-		UNSIGNED4 _ConvertTime(INTEGER2 seconds,
-							   INTEGER2 minutes,
-							   INTEGER2 hours,
-							   INTEGER2 mday,
-							   INTEGER2 month,
-							   INTEGER2 year,
-							   INTEGER2 weekday,
-							   INTEGER2 dayofyear,
-							   INTEGER2 isdst,
-							   BOOLEAN use_local) := BEGINC++
-			#option pure
-			#include <time.h>
-			#body
-		
-			struct tm	timeInfo;
-			time_t		the_time;
-			
-			// Push each time part value into the tm struct
-			timeInfo.tm_sec = seconds;
-			timeInfo.tm_min = minutes;
-			timeInfo.tm_hour = hours;
-			timeInfo.tm_mday = mday;
-			timeInfo.tm_mon = month;
-			timeInfo.tm_year = year;
-			timeInfo.tm_wday = weekday;
-			timeInfo.tm_yday = dayofyear;
-			timeInfo.tm_isdst = isdst;
-			
-			// Convert time parts to 'time since epoch' differently, depending
-			// on whether the time parts were originally local or UTC
-			if (use_local)
-			{
-				the_time = mktime(&timeInfo);
-			}
-			else
-			{
-				char*				tz = NULL;
-				const char*			tzName = "TZ";
-				pthread_mutex_t		getEnvMutex = PTHREAD_MUTEX_INITIALIZER;
-				
-				// Mutex stuff required because env manipulation is not
-				// thread safe
-				
-				pthread_mutex_lock(&getEnvMutex);
-		
-				tz = getenv(tzName);
-				setenv(tzName,"",1);
-				tzset();
-				
-				the_time = mktime(&timeInfo);
-				
-				if (tz)
-				{
-					setenv(tzName,tz,1);
-				}
-				else
-				{
-					unsetenv(tzName);
-				}
-				tzset();
-		
-				pthread_mutex_unlock(&getEnvMutex);
-			}
-			
-			return the_time;
-		ENDC++;
-		
-		
-		// Call private C++ function to do the heavy lifting
-		RETURN _ConvertTime
+	EXPORT	Time_t MakeTimeInSecondsFromTMDict(TMDict time_parts,
+											   BOOLEAN as_local_time = FALSE) := FUNCTION
+		RETURN MakeTimeInSecondsFromTimeParts
 			(
-				time_parts[TMField.tm_sec].v,
-				time_parts[TMField.tm_min].v,
-				time_parts[TMField.tm_hour].v,
+				time_parts[TMField.tm_year].v + 1900,
+				time_parts[TMField.tm_mon].v + 1,
 				time_parts[TMField.tm_mday].v,
-				time_parts[TMField.tm_mon].v,
-				time_parts[TMField.tm_year].v,
-				time_parts[TMField.tm_wday].v,
-				time_parts[TMField.tm_yday].v,
+				time_parts[TMField.tm_hour].v,
+				time_parts[TMField.tm_min].v,
+				time_parts[TMField.tm_sec].v,
 				time_parts[TMField.tm_isdst].v,
 				as_local_time
 			);
@@ -313,7 +358,7 @@ EXPORT	SysTime := MODULE,FORWARD
 	 *							to a readable date/time as per the value of
 	 *							the format argument.
 	 **************************************************************************/
-	EXPORT	STRING FormattedTime(UNSIGNED4 time_in_seconds,
+	EXPORT	STRING FormattedTime(Time_t time_in_seconds,
 								 VARSTRING format = '%FT%T',
 								 BOOLEAN as_local_time = FALSE) := BEGINC++
 		#option pure
@@ -366,11 +411,11 @@ EXPORT	SysTime := MODULE,FORWARD
 	 * 
 	 * @return	The date in Std.Date.Date_t format.
 	 **************************************************************************/
-	EXPORT	Std.Date.Date_t DateFromTimeInSeconds(UNSIGNED4 time_in_seconds,
+	EXPORT	Std.Date.Date_t DateFromTimeInSeconds(Time_t time_in_seconds,
 												  BOOLEAN as_local_time = FALSE) := FUNCTION
 		
 		// Private C++ function to make the system call
-		UNSIGNED4 _MakeDate(UNSIGNED4 the_time, BOOLEAN use_local) := BEGINC++
+		Time_t _MakeDate(Time_t the_time, BOOLEAN use_local) := BEGINC++
 			#option pure
 			#include <time.h>
 			#body
@@ -490,13 +535,13 @@ EXPORT	SysTime := MODULE,FORWARD
 	 * @return	Returns an integer representing the local time zone offset, in
 	 *			seconds, from UTC.
 	 **************************************************************************/
-	EXPORT	UNSIGNED4 AdjustTimeInSeconds(UNSIGNED4 time_in_seconds,
-										  INTEGER2 delta_years = 0,
-										  INTEGER2 delta_months = 0,
-										  INTEGER2 delta_days = 0,
-										  INTEGER2 delta_hours = 0,
-										  INTEGER2 delta_minutes = 0,
-										  INTEGER2 delta_seconds = 0) := BEGINC++
+	EXPORT	Time_t AdjustTimeInSeconds(UNSIGNED4 time_in_seconds,
+									   INTEGER2 delta_years = 0,
+									   INTEGER2 delta_months = 0,
+									   INTEGER2 delta_days = 0,
+									   INTEGER2 delta_hours = 0,
+									   INTEGER2 delta_minutes = 0,
+									   INTEGER2 delta_seconds = 0) := BEGINC++
 		#option pure
 		#include <time.h>
 		#body
@@ -537,10 +582,10 @@ EXPORT	SysTime := MODULE,FORWARD
 	 * @return	Returns an integer representing the local time zone offset, in
 	 *			seconds, from UTC.
 	 **************************************************************************/
-	EXPORT	UNSIGNED4 AdjustDate(Std.Date.Date_t the_date,
-								 INTEGER2 delta_years = 0,
-								 INTEGER2 delta_months = 0,
-								 INTEGER2 delta_days = 0) := BEGINC++
+	EXPORT	Time_t AdjustDate(Std.Date.Date_t the_date,
+							  INTEGER2 delta_years = 0,
+							  INTEGER2 delta_months = 0,
+							  INTEGER2 delta_days = 0) := BEGINC++
 		#option pure
 		#include <time.h>
 		#body
@@ -578,44 +623,78 @@ END;	// SysTime Module
 /*******************************************************************************
 // Example ECL
 
-IMPORT SysTime;
-
 timeNow := SysTime.CurrentUTCTimeInSeconds();
 
 OUTPUT(timeNow,NAMED('CurrentUTCTimeInSeconds'));
+// 1377863637
 
 OUTPUT(SysTime.CurrentUTCTimeInSecondsWithPrecision(),NAMED('CurrentUTCTimeInSecondsWithPrecision'));
+// 1377863637.162567
 
 OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=FALSE),NAMED('FormattedTimeUTC'));
+// 2013-08-30T11:53:57
 
 OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=TRUE),NAMED('FormattedTimeLocal'));
+// 2013-08-30T06:53:57
 
 struct1 := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=FALSE);
 OUTPUT(struct1,NAMED('MakeTMStructFromTimeInSecondsUTC'));
+//	##	f	v
+//	1	9	0
+//	2	6	113
+//	3	3	11
+//	4	7	5
+//	5	4	30
+//	6	1	57
+//	7	8	241
+//	8	5	7
+//	9	2	53
+
+OUTPUT(SysTime.MakeTimeInSecondsFromTimeParts(2013,1,1,6,0,0),NAMED('MakeTimeInSecondsFromTimeParts20130101'));
+// 1357020000
 
 time1 := SysTime.MakeTimeInSecondsFromTMDict(struct1);
 OUTPUT(time1,NAMED('MakeTimeInSecondsFromTMStruct1'));
+// 1377863637
 
 struct2 := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=TRUE);
 OUTPUT(struct2,NAMED('MakeTMStructFromTimeInSecondsLocal'));
+//	##	f	v
+//	1	9	1
+//	2	6	113
+//	3	3	6
+//	4	7	5
+//	5	4	30
+//	6	1	57
+//	7	8	241
+//	8	5	7
+//	9	2	53
 
 time2 := SysTime.MakeTimeInSecondsFromTMDict(struct2);
 OUTPUT(time2,NAMED('MakeTimeInSecondsFromTMStruct2'));
+// 1377845637
 
 OUTPUT(SysTime.DateFromTimeInSeconds(timeNow),NAMED('DateFromTimeInSeconds'));
+// 20130830
 
 theDate := SysTime.CurrentDate();
 OUTPUT(theDate,NAMED('CurrentDate'));
+// 20130830
 
 OUTPUT(SysTime.CurrentISODate(),NAMED('CurrentISODate'));
+// 2013-08-30
 
 OUTPUT(SysTime.LocalTimeZoneOffset(),NAMED('LocalTimeZoneOffset'));
+// -0500
 
 OUTPUT(SysTime.LocalTimeZoneOffsetInSeconds(),NAMED('LocalTimeZoneOffsetInSeconds'));
+// -18000
 
 deltaTime := SysTime.AdjustTimeInSeconds(timeNow,delta_days:=1);
 OUTPUT(deltaTime,NAMED('AdjustTimeInSecondsOneDayForward'));
+// 1377950037
 
 OUTPUT(SysTime.AdjustDate(theDate,delta_days:=1),NAMED('AdjustDate'));
+// 20130831
 
 *******************************************************************************/
