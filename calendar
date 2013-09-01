@@ -13,12 +13,12 @@ EXPORT Calendar := MODULE
 	END; 
 
 	/* EXPORTED TYPES */
-	EXPORT Date                                 																			:= INTEGER4;
-	EXPORT Time                                 																			:= INTEGER4;
-	EXPORT DateTime                              																			:= INTEGER;
+	EXPORT Date                             := INTEGER4;
+	EXPORT Time                             := INTEGER4;
+	EXPORT DateTime                         := INTEGER;
 	
 	/* OBJECT INTERNALLY USED TO GET THE DATE REPRESENTATION TO FACILITATE INTROSPECTION OF DATE */
-	SHARED GetInternalDTRepresentation(DateTime dt)		:= MODULE
+	SHARED GetInternalDTRepresentation(DateTime dt)	:= MODULE
 		EXPORT INTEGER4 DaySecsElapsed     	:= (INTEGER4) (dt%86400);
 		EXPORT INTEGER4 DaysSince1900     	:= (INTEGER4) ((dt-DaySecsElapsed)/86400);
 		EXPORT INTEGER4 Date1900Delta     	:= 693596; 
