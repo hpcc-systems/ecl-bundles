@@ -543,7 +543,7 @@ EXPORT  SysTime := MODULE,FORWARD
      * @return  Returns an integer representing the local time zone offset, in
      *          seconds, from UTC.
      **************************************************************************/
-    EXPORT  Time_t AdjustTimeInSeconds(UNSIGNED4 time_in_seconds,
+    EXPORT  Time_t AdjustTimeInSeconds(Time_t time_in_seconds,
                                        INTEGER2 delta_years = 0,
                                        INTEGER2 delta_months = 0,
                                        INTEGER2 delta_days = 0,
