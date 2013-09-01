@@ -570,25 +570,17 @@ EXPORT  SysTime := MODULE,FORWARD
     ENDC++;
     
     /***************************************************************************
-     * Adjust a time in seconds value.
+     * Adjust a standard date value.
      *
-     * @param   time_in_seconds Integer representing the number of seconds
-     *                          since epoch.
+     * @param   the_date        A date in Std.Date.Date_t format.
      * @param   delta_years     The number of years to apply.  A positive
      *                          number indicates a future time.
      * @param   delta_months    The number of months to apply.  A positive
      *                          number indicates a future time.
      * @param   delta_days      The number of days to apply.  A positive
      *                          number indicates a future time.
-     * @param   delta_hours     The number of hours to apply.  A positive
-     *                          number indicates a future time.
-     * @param   delta_minutes   The number of minutes to apply.  A positive
-     *                          number indicates a future time.
-     * @param   delta_seconds   The number of seconds to apply.  A positive
-     *                          number indicates a future time.
      * 
-     * @return  Returns an integer representing the local time zone offset, in
-     *          seconds, from UTC.
+     * @return  A date in Std.Date.Date_t format.
      **************************************************************************/
     EXPORT  Time_t AdjustDate(Std.Date.Date_t the_date,
                               INTEGER2 delta_years = 0,
