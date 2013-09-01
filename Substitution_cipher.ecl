@@ -1,4 +1,11 @@
-﻿EXPORT Bundle := MODULE(Std.BundleBase)
+IMPORT ML;
+ 
+/*************************************************************************** 
+
+                           BUNDLE DECLARATION
+
+**************************************************************************/
+EXPORT Bundle := MODULE(Std.BundleBase)
   EXPORT Name := 'Substitution_cipher';
   EXPORT Description := 'Replaces cipher text with a number pattern and compares the patter to words in a dictionary';
   EXPORT Authors := ['Gavin Witz'];
@@ -9,23 +16,24 @@
   EXPORT PlatformVersion := '4.0.0';
 END;
  
-/*
+/*************************************************************************** 
+
 Given cipher text, the following ECL code decrpyts the longest length word. 
-Once the longest word has been discovered, the resulting letter can be used for the rest of the text
+Once the longest word has been discovered, the resulting letter can be used 
+for the rest of the text
 
 One very fast trick is to find a word that is greater than six
-characters and determine it's pattern. For each unique letter in the word it is assigned a
-sequential number. Example cipher text QWRGTRYTRQT = CONVENIENCE
-                                       12345365315   12345365315
-*/
-
+characters and determine it's pattern. For each unique letter in the word it is 
+assigned a sequential number. Example cipher text QWRGTRYTRQT = CONVENIENCE
+																									12345365315   12345365315
+**************************************************************************/
 
 layout_line := RECORD
 	STRING line;
 END;
 
 dSentences:=DATASET([
-{'HEWFNUXEYHC XS AHNOLFOB WYH ZURNFU XSAROTFWXRS FEELOFSDH DHOWXAXDFWXRS '+
+{1,'HEWFNUXEYHC XS AHNOLFOB WYH ZURNFU XSAROTFWXRS FEELOFSDH DHOWXAXDFWXRS '+
 'ZXFD QORZOFT XE F OXZRORLE QORZOFT CHEXZSHC WR HSELOH WYFW EHDLOXWB '+
 'QORAHEEXRSFUE THHW F TXSXTLT EWFSCFOC RA HIDHUUHSDH XS WYH VSRJUHCZH '+
 'FSC EVXUUE WYHB QREEHEE WYHOH XE F DOXWXDFU EYROWFZH RA XSAROTFWXRS '+
@@ -35,14 +43,31 @@ dSentences:=DATASET([
 'XSCLEWOB WR CHTRSEWOFWH WYH CHQWY RA WYHXO FNXUXWB FSC FEELOH DLOOHSW ' +
 'RO QOREQHDWXKH HTQURBHOE WYFW WYH DHOWXAXHC XSCXKXCLFU YFE WYH FNXUXWB ' +
 'WR ELDDHHC'}
-],layout_line);
+],ML.Docs.Types.Raw);
 
+
+/*************************************************************************** 
+Using ML to Tokenize dSetences and assign the longest length word to 
+dataset ds
+**************************************************************************/
+
+dSequenced:=ML.Docs.Tokenize.Enumerate(dSentences);
+dCleaned:=ML.Docs.Tokenize.Clean(dSentences);
+dSplit:=ML.Docs.Tokenize.Split(dCleaned); 
+
+LongestWord := SORT(dSplit,-length(word));
 
 ds_dic := dataset('~thor::in::dictionary',layout_line,csv(terminator('\n'),separator(','), quote('')));
 
-ds_cipher := DATASET(['OHEQRSEXNXUXWXHE'], layout_line); // Place longest lenght word into ds dataset
+ds_cipher := DATASET([LongestWord[1].word], layout_line);
 
-STRING get_pattern(STRING dictionary_txt) := FUNCTION  //This function iterates through the defined dataset dictionary
+/*************************************************************************** 
+    Returns the dictionary word if found or No Result
+    param: dictionary word.
+    return: dictionary word if its sequence matches that of the cipher text.
+***************************************************************************/
+
+STRING get_pattern(STRING dictionary_txt) := FUNCTION  
 
 layout_p2 := RECORD
 	STRING out2;
@@ -115,16 +140,17 @@ Proj_EN_DIC := project(f_EN_DIC, transPattern(left));
 retcipher := sort(Proj_cipher,seqid);
 retEN_DIC := sort(Proj_EN_DIC,seqid);
 
+//if the datasets are equal their count will be 0, resulting in the dictionary_txt
 ret := if(count(retcipher - retEN_DIC) = 0,dictionary_txt,'no result');
 
 return ret;
 END;
 
 layout_line  t3(layout_line L) := TRANSFORM
-
-  temp5 := if(LENGTH(L.line) = LENGTH(ds_cipher[1].line),get_pattern(L.line),'');
+//Only get_pattern if the dictionary word length equals the longest cipher word lenght  
+  tmp := if(LENGTH(L.line) = LENGTH(ds_cipher[1].line),get_pattern(L.line),'');
  
-			SELF.line := temp5;  
+			SELF.line := tmp;  
 	SELF := L;
 END;
 
