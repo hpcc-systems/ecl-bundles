@@ -32,9 +32,18 @@ EXPORT LZLib := MODULE,FORWARD
   END;
   
   //-------------------------------------------------------------------------
+  // Get a count of the number of rows in the XML file specified
+  //-------------------------------------------------------------------------
+  EXPORT RowCountXML(STRING sFileName,STRING sPath=sDefaultPath,STRING sRowTag):=FUNCTION
+    RETURN (UNSIGNED)(PIPE('bash -c "cat '+sPath+sFilename+' | sed \'s/>[^<]*/\\n/g\' |grep \'</'+sRowTag+'\' | wc -l"',{STRING s;},CSV)[1].s);
+  END;
+  
+  //-------------------------------------------------------------------------
   // Get a count of the number of rows in the CSV file specified
   //-------------------------------------------------------------------------
-  EXPORT RowCountVariable(STRING sFileName,STRING sPath=sDefaultPath):=(UNSIGNED)PIPE('bash -c "cat '+sPath+sFilename+' | wc -l"',{STRING s;},CSV)[1].s;
+  EXPORT RowCountVariable(STRING sFileName,STRING sPath=sDefaultPath):=FUNCTION
+    RETURN (UNSIGNED)PIPE('bash -c "cat '+sPath+sFilename+' | wc -l"',{STRING s;},CSV)[1].s;
+  END;
   
   //-------------------------------------------------------------------------
   // Get a count of the number of columns in the CSV file specified
@@ -50,9 +59,10 @@ EXPORT LZLib := MODULE,FORWARD
   //-------------------------------------------------------------------------
   // Decompress the specified zip file
   //-------------------------------------------------------------------------
-  EXPORT UnzipFile(STRING sFilename,STRING sPath=sDefaultPath,BOOLEAN bKeepCompressed=TRUE):=FUNCTION
-    sZipType:=REGEXFIND('[^.]+$',sFilename,1);
+  EXPORT UnzipFile(STRING sFilename,STRING sPath=sDefaultPath,BOOLEAN bKeepCompressed=TRUE,STRING sCompressionProgram=''):=FUNCTION
+    sZipType:=REGEXFIND('([^.]+)$',sFilename,1);
     sZipProg:=MAP(
+      sCompressionProgram!='' => sCompressionProgram,
       sZipType IN ['bz2','ba','tbz2','tbz'] => 'bzip2 -d ',
       sZipType='zip' => 'gzip -S .zip -d ',
       'gzip -d '
@@ -97,14 +107,41 @@ EXPORT LZLib := MODULE,FORWARD
     );
   END;
   
+  //-------------------------------------------------------------------------
+  // same as UnzipAndSprayVariable, but for XML files
+  //-------------------------------------------------------------------------
+  EXPORT UnzipAndSprayXML(
+    STRING sIP,
+    STRING sFullPath,
+    UNSIGNED maxrecordsize=4096,
+    STRING srcRowTag,
+    STRING srcEncoding='utf8',
+    STRING destinationgroup,
+    STRING destinationlogicalname='',
+    UNSIGNED timout=-1,
+    STRING espserverIPport='',
+    UNSIGNED maxConnections=1,
+    BOOLEAN allowoverwrite=FALSE,
+    BOOLEAN replicate=FALSE,
+    BOOLEAN compress=FALSE,
+    BOOLEAN removewhendone=FALSE
+  ):=FUNCTION
+    sPath:=REGEXREPLACE('[^\\/]+$',sFullPath,'');
+    sUnzippedFile:=ZipFileList(sFullPath)[1].filename;
+    sNewFile:=IF(destinationlogicalname='',sUnzippedFile,destinationlogicalname);
+    sFileToSpray:=sPath+sUnzippedFile;
+    RETURN SEQUENTIAL(
+      UnzipFile(sFullPath),
+      STD.File.SprayXML(sourceIP,sourcepath,maxrecordsize,srcRowTag,srcEncoding,destinationgroup,destinationlogicalname,timeout,espserverIPport,maxConnections,allowoverwrite,replicate,compress),
+      IF(removewhendone,STD.File.DeleteExternalFile(sIP,sFileToSpray),OUTPUT('File '+sUnzippedFile+' was not removed'))
+    );
+  END;
 /*
   Functions in development and considered for future expansion
 
   GetFromDropbox() // Requires username and password interaction
   PutToDropbox()
-  RowCountXML()
   CoumnCountXML()
-  UnzipAndSprayXML()
   DesprayAndZip()
   SprayVariableSelective() // For spraying only certain columns from the LZ file
   AnalyzeVariable() // AMBITIOUS: get metrics from the LZ file (e.g. min/max line size, min/max size per column, column shape/content information, etc.)
@@ -112,6 +149,7 @@ EXPORT LZLib := MODULE,FORWARD
   SuggestedLayoutXML()
   SuggestedLayoutVariable()
   ** Need to add support for zip files with multiple members (use unzip instead of gunzip) and enable progressive file extraction, spray, deletion
+  ** Script deploy/run/remove at the cluster level??
 */
 END;
 
@@ -119,13 +157,16 @@ END;
 /*
   EXAMPLES
 
+  LZLib.GetRemoteFile('http://dumps.wikimedia.org/enwiki/20130403/enwiki-20130403-pages-meta-current.xml.bz2');
   LZLib.UnzipFile('test2.gz');
   LZLib.UnzipFile('test.zip','/var/lib/HPCCSystems/someotherdropzone/');
-  LZLib.UnzipAndSpray('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
-  LZLib.UnzipAndSpray('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor',,,,,TRUE,,TRUE);
-  LZLib.UnzipAndSpray('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.gz',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
+  LZLib.UnzipAndSprayVariable('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
+  LZLib.UnzipAndSprayVariable('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor',,,,,TRUE,,TRUE);
+  LZLib.UnzipAndSprayVariable('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.gz',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
+  LZLib.UnzipAndSprayXML('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.gz',,'Row',,'mythor','test',,,,TRUE,,TRUE,TRUE);
   LZLib.ZipFileList('test.zip');
   LZLib.FileList();
   LZLib.TopRows('test.txt',,20);
+  LZLib.RowCountXML('test.xml',,'Row');
 
 */
