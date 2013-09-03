@@ -49,6 +49,7 @@ EXPORT  SysTime := MODULE,FORWARD
      *      - DayOfWeekNum              0-6 (0 = Sunday)
      *      - DayOfYearNum              0-365 (0 = January 1)
      *      - IsDaylightSavingsTime     TRUE | FALSE
+     *      - IsLeapYear                TRUE | FALSE
      **************************************************************************/
     
     /***************************************************************************
@@ -103,6 +104,7 @@ EXPORT  SysTime := MODULE,FORWARD
         EXPORT  DayOfWeekNum := tmValues[TMField.tm_wday].v;
         EXPORT  DayOfYearNum := tmValues[TMField.tm_yday].v;
         EXPORT  IsDaylightSavingsTime := (tmValues[TMField.tm_isdst].v > 0);
+        EXPORT  IsLeapYear := ((Year % 4 = 0) AND (Year % 100 != 0)) OR (Year % 400 = 0);
     END;
     
     /***************************************************************************
