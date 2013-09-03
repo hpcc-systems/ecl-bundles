@@ -420,38 +420,33 @@ EXPORT  SysTime := MODULE,FORWARD
      * @return  The date in Std.Date.Date_t format.
      **************************************************************************/
     EXPORT  Std.Date.Date_t DateFromTimeInSeconds(Time_t time_in_seconds,
-                                                  BOOLEAN as_local_time = FALSE) := FUNCTION
+                                                  BOOLEAN as_local_time = FALSE) := BEGINC++
         
-        // Private C++ function to make the system call
-        Time_t _MakeDate(Time_t the_time, BOOLEAN use_local) := BEGINC++
-            #option pure
-            #include <time.h>
-            #body
+        #option pure
+        #include <time.h>
+        #body
+    
+        struct tm       timeInfo;
+        time_t          theTime = time_in_seconds;
+        unsigned int    theDate = 0;
         
-            struct tm       timeInfo;
-            time_t          theTime = the_time;
-            unsigned int    result = 0;
-            
-            // Create time parts differently depending on whether you need
-            // UTC or local time
-            if (use_local)
-            {
-                localtime_r(&theTime,&timeInfo);
-            }
-            else
-            {
-                gmtime_r(&theTime,&timeInfo);
-            }
-            
-            result = (timeInfo.tm_year + 1900) * 10000;
-            result += (timeInfo.tm_mon + 1) * 100;
-            result += timeInfo.tm_mday;
-            
-            return result;
-        ENDC++;
+        // Create time parts differently depending on whether you need
+        // UTC or local time
+        if (as_local_time)
+        {
+            localtime_r(&theTime,&timeInfo);
+        }
+        else
+        {
+            gmtime_r(&theTime,&timeInfo);
+        }
         
-        RETURN (Std.Date.Date_t)_MakeDate(time_in_seconds,as_local_time);
-    END;
+        theDate = (timeInfo.tm_year + 1900) * 10000;
+        theDate += (timeInfo.tm_mon + 1) * 100;
+        theDate += timeInfo.tm_mday;
+        
+        return theDate;
+    ENDC++;
     
     /***************************************************************************
      * Returns the current date in standard library format.
