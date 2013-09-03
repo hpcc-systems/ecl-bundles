@@ -23,9 +23,11 @@ EXPORT  SysTime := MODULE,FORWARD
      *
      *  - CurrentUTCTimeInSeconds
      *  - CurrentUTCTimeInSecondsWithPrecision
-     *  - MakeTMDictFromTimeInSeconds
      *  - MakeTimeInSecondsFromTimeParts
+     *  - MakeTMDictFromTimeInSeconds
+     *  - MakeTMDictFromDate
      *  - MakeTimeInSecondsFromTMDict
+     *  - MakeDateFromTMDict
      *  - FormattedTime
      *  - DateFromTimeInSeconds
      *  - CurrentDate
@@ -158,88 +160,6 @@ EXPORT  SysTime := MODULE,FORWARD
     ENDC++;
     
     /***************************************************************************
-     * Converts a UTC time represented in seconds to a TMDict record, which
-     * contains individual time components broken out.
-     *
-     * @param   time_in_seconds Integer representing the number of seconds
-     *                          since epoch (UTC).
-     * @param   as_local_time   If TRUE, time_in_seconds is converted to
-     *                          local time.  Optional; defaults to FALSE.
-     * 
-     * @return                  DATASET(TMDict) containing only one record.
-     **************************************************************************/
-    EXPORT  TMDict MakeTMDictFromTimeInSeconds(Time_t time_in_seconds,
-                                               BOOLEAN as_local_time = FALSE) := FUNCTION
-        
-        TMRec := RECORD
-            TMField     f;
-            INTEGER2    v;
-        END;
-        
-        // Private C++ function to make the system call
-        DATASET(TMRec) _MakeTimeParts(Time_t the_time, BOOLEAN use_local) := BEGINC++
-            #option pure
-            #include <time.h>
-            #body
-        
-            struct tm   timeInfo;
-            time_t      theTime = the_time;
-            
-            // Create time parts differently depending on whether you need
-            // UTC or local time
-            if (use_local)
-            {
-                localtime_r(&theTime,&timeInfo);
-            }
-            else
-            {
-                gmtime_r(&theTime,&timeInfo);
-            }
-            
-            // Set the internal response variables so the caller knows how
-            // to read the response
-            __lenResult = (sizeof(unsigned short) + sizeof(signed short)) * 9;
-            __result = rtlMalloc(__lenResult);
-            
-            // Actually write the output values, building up the key/value
-            // records one at a time
-            signed short*   out = reinterpret_cast<signed short*>(__result);
-        
-            out[0] = 1;                     // TMField.tm_sec
-            out[1] = timeInfo.tm_sec;
-        
-            out[2] = 2;                     // TMField.tm_min
-            out[3] = timeInfo.tm_min;
-        
-            out[4] = 3;                     // TMField.tm_hour
-            out[5] = timeInfo.tm_hour;
-        
-            out[6] = 4;                     // TMField.tm_mday
-            out[7] = timeInfo.tm_mday;
-        
-            out[8] = 5;                     // TMField.tm_mon
-            out[9] = timeInfo.tm_mon;
-        
-            out[10] = 6;                    // TMField.tm_year
-            out[11] = timeInfo.tm_year;
-        
-            out[12] = 7;                    // TMField.tm_wday
-            out[13] = timeInfo.tm_wday;
-        
-            out[14] = 8;                    // TMField.tm_yday
-            out[15] = timeInfo.tm_yday;
-        
-            out[16] = 9;                    // TMField.tm_isdst
-            out[17] = timeInfo.tm_isdst;
-        ENDC++;
-        
-        // Call private C++ function to do the heavy lifting
-        d := _MakeTimeParts(time_in_seconds,as_local_time);
-        
-        RETURN DICTIONARY(d,{f => v});
-    END;
-    
-    /***************************************************************************
      * Given date and time values, return the equivalent time in seconds
      * since epoch (UTC).
      *
@@ -328,6 +248,107 @@ EXPORT  SysTime := MODULE,FORWARD
     ENDC++;
     
     /***************************************************************************
+     * Converts a UTC time represented in seconds to a TMDict record, which
+     * contains individual time components broken out.
+     *
+     * @param   time_in_seconds Integer representing the number of seconds
+     *                          since epoch (UTC).
+     * @param   as_local_time   If TRUE, time_in_seconds is converted to
+     *                          local time.  Optional; defaults to FALSE.
+     * 
+     * @return                  TMDict instance.
+     **************************************************************************/
+    EXPORT  TMDict MakeTMDictFromTimeInSeconds(Time_t time_in_seconds,
+                                               BOOLEAN as_local_time = FALSE) := FUNCTION
+        
+        TMRec := RECORD
+            TMField     f;
+            INTEGER2    v;
+        END;
+        
+        // Private C++ function to make the system call
+        DATASET(TMRec) _MakeTimeParts(Time_t the_time, BOOLEAN use_local) := BEGINC++
+            #option pure
+            #include <time.h>
+            #body
+        
+            struct tm   timeInfo;
+            time_t      theTime = the_time;
+            
+            // Create time parts differently depending on whether you need
+            // UTC or local time
+            if (use_local)
+            {
+                localtime_r(&theTime,&timeInfo);
+            }
+            else
+            {
+                gmtime_r(&theTime,&timeInfo);
+            }
+            
+            // Set the internal response variables so the caller knows how
+            // to read the response
+            __lenResult = (sizeof(unsigned short) + sizeof(signed short)) * 9;
+            __result = rtlMalloc(__lenResult);
+            
+            // Actually write the output values, building up the key/value
+            // records one at a time
+            signed short*   out = reinterpret_cast<signed short*>(__result);
+        
+            out[0] = 1;                     // TMField.tm_sec
+            out[1] = timeInfo.tm_sec;
+        
+            out[2] = 2;                     // TMField.tm_min
+            out[3] = timeInfo.tm_min;
+        
+            out[4] = 3;                     // TMField.tm_hour
+            out[5] = timeInfo.tm_hour;
+        
+            out[6] = 4;                     // TMField.tm_mday
+            out[7] = timeInfo.tm_mday;
+        
+            out[8] = 5;                     // TMField.tm_mon
+            out[9] = timeInfo.tm_mon;
+        
+            out[10] = 6;                    // TMField.tm_year
+            out[11] = timeInfo.tm_year;
+        
+            out[12] = 7;                    // TMField.tm_wday
+            out[13] = timeInfo.tm_wday;
+        
+            out[14] = 8;                    // TMField.tm_yday
+            out[15] = timeInfo.tm_yday;
+        
+            out[16] = 9;                    // TMField.tm_isdst
+            out[17] = timeInfo.tm_isdst;
+        ENDC++;
+        
+        // Call private C++ function to do the heavy lifting
+        d := _MakeTimeParts(time_in_seconds,as_local_time);
+        
+        RETURN DICTIONARY(d,{f => v});
+    END;
+    
+    /***************************************************************************
+     * Converts a standard date to a TMDict record, which contains individual
+     * time components broken out.
+     *
+     * @param   the_date        A date in Std.Date.Date_t format.
+     * 
+     * @return                  TMDict instance.
+     **************************************************************************/
+    EXPORT  TMDict MakeTMDictFromDate(Std.Date.Date_t the_date) := FUNCTION
+        seconds := MakeTimeInSecondsFromTimeParts
+            (
+                Std.Date.Year(the_date),
+                Std.Date.Month(the_date),
+                Std.Date.Day(the_date)
+            );
+        
+        RETURN MakeTMDictFromTimeInSeconds(seconds);
+    END;
+    
+    /***************************************************************************
      * Converts a TMDict record, which contains individual time components,
      * to a UTC time.
      *
@@ -354,6 +375,25 @@ EXPORT  SysTime := MODULE,FORWARD
                 time_parts[TMField.tm_isdst].v,
                 as_local_time
             );
+    END;
+    
+    /***************************************************************************
+     * Converts a TMDict record, which contains individual time components,
+     * to a standard date.
+     *
+     * @param   time_parts      TMDict containing broken-out time components
+     *                          (such as the return value of
+     *                          MakeTMDictFromTimeInSeconds()).
+     *                          since epoch (UTC).
+     * 
+     * @return                  The date in Std.Date.Date_t format.
+     **************************************************************************/
+    EXPORT  Std.Date.Date_t MakeDateFromTMDict(TMDict time_parts) := FUNCTION
+        year := time_parts[TMField.tm_year].v + 1900;
+        month := time_parts[TMField.tm_mon].v + 1;
+        day := time_parts[TMField.tm_mday].v;
+        
+        RETURN (year * 10000) + (month * 100) + day;
     END;
     
     /***************************************************************************
