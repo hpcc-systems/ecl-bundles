@@ -241,26 +241,32 @@ EXPORT  SysTime := MODULE,FORWARD
      * Given date and time values, return the equivalent time in seconds
      * since epoch (UTC).
      *
-     * @param   year
-     * @param   month
-     * @param   day
-     * @param   hours
-     * @param   minutes
-     * @param   seconds
-     * @param   isdst
+     * @param   year            The four-digit year.
+     * @param   month           The number of the month, range 1-12.
+     * @param   day             The day number of the month, range 1-31.
+     * @param   hours           The hour, range 0-23.  Optional;
+     *                          defaults to 0.
+     * @param   minutes         The minute, range 0-59.  Optional; defaults
+     *                          to 0.
+     * @param   seconds         The seconds, range 0-59.  Optional; defaults
+     *                          to 0.
+     * @param   is_dst          Whether daylight savings time is in effect
+     *                          or not.  Valid only if as_local_time is TRUE.
+     *                          Use 1=DST in effect, 0=DST not in effect.
+     *                          Optional; defaults to 0.
      * @param   as_local_time   If TRUE, the values are interpreted as local
      *                          time rather than UTC time.  Optional;
      *                          defaults to FALSE.
      * 
      * @return                  The time in seconds since epoch (UTC).
      **************************************************************************/
-    EXPORT  Time_t MakeTimeInSecondsFromTimeParts(INTEGER2 year = 0,
-                                                  INTEGER2 month = 0,
-                                                  INTEGER2 day = 0,
+    EXPORT  Time_t MakeTimeInSecondsFromTimeParts(INTEGER2 year,
+                                                  INTEGER2 month,
+                                                  INTEGER2 day,
                                                   INTEGER2 hours = 0,
                                                   INTEGER2 minutes = 0,
                                                   INTEGER2 seconds = 0,
-                                                  INTEGER2 isdst = 0,
+                                                  INTEGER2 is_dst = 0,
                                                   BOOLEAN as_local_time = FALSE) := BEGINC++
         #option pure
         #include <time.h>
@@ -278,7 +284,7 @@ EXPORT  SysTime := MODULE,FORWARD
         timeInfo.tm_year = year - 1900;
         timeInfo.tm_wday = 0;
         timeInfo.tm_yday = 0;
-        timeInfo.tm_isdst = isdst;
+        timeInfo.tm_isdst = is_dst;
         
         // Convert time parts to 'time since epoch' differently, depending
         // on whether the time parts were originally local or UTC
