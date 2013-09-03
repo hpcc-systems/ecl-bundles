@@ -192,6 +192,9 @@ EXPORT  SysTime := MODULE,FORWARD
                                                   BOOLEAN as_local_time = FALSE) := BEGINC++
         #option pure
         #include <time.h>
+        
+        static pthread_mutex_t     gGetEnvMutex = PTHREAD_MUTEX_INITIALIZER;
+        
         #body
     
         struct tm   timeInfo;
@@ -218,12 +221,11 @@ EXPORT  SysTime := MODULE,FORWARD
         {
             char*               tz = NULL;
             const char*         tzName = "TZ";
-            pthread_mutex_t     getEnvMutex = PTHREAD_MUTEX_INITIALIZER;
             
             // Mutex stuff required because env manipulation is not
             // thread safe
             
-            pthread_mutex_lock(&getEnvMutex);
+            pthread_mutex_lock(&gGetEnvMutex);
     
             tz = getenv(tzName);
             setenv(tzName,"",1);
@@ -241,7 +243,7 @@ EXPORT  SysTime := MODULE,FORWARD
             }
             tzset();
     
-            pthread_mutex_unlock(&getEnvMutex);
+            pthread_mutex_unlock(&gGetEnvMutex);
         }
         
         return the_time;
@@ -420,13 +422,15 @@ EXPORT  SysTime := MODULE,FORWARD
         #option pure
         #include <time.h>
         #include <pthread.h>
+        
+        static pthread_mutex_t     gStrftimeMutex = PTHREAD_MUTEX_INITIALIZER;
+        
         #body
         
         struct tm           timeInfo;
         time_t              theTime = time_in_seconds;
         size_t              kBufferSize = 256;
         char                buffer[kBufferSize];
-        pthread_mutex_t     strftimeMutex = PTHREAD_MUTEX_INITIALIZER;
         int                 numCharsInResult = 0;
         
         memset(buffer,kBufferSize,0);
@@ -443,9 +447,9 @@ EXPORT  SysTime := MODULE,FORWARD
         }
         
         // Mutexes required because strftime() is not thread safe
-        pthread_mutex_lock(&strftimeMutex);
+        pthread_mutex_lock(&gStrftimeMutex);
         numCharsInResult = strftime(buffer,kBufferSize,format,&timeInfo);
-        pthread_mutex_unlock(&strftimeMutex);
+        pthread_mutex_unlock(&gStrftimeMutex);
         
         __lenResult = numCharsInResult;
         __result = NULL;
