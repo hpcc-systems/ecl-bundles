@@ -52,6 +52,10 @@ EXPORT  SysTime := MODULE,FORWARD
      *      - DayOfYearNum              0-365 (0 = January 1)
      *      - IsDaylightSavingsTime     TRUE | FALSE
      *      - IsLeapYear                TRUE | FALSE
+     *
+     * Testing
+     *
+     *  - SysTime.__selfTest.testAll;
      **************************************************************************/
     
     /***************************************************************************
@@ -629,10 +633,10 @@ EXPORT  SysTime := MODULE,FORWARD
      * 
      * @return  A date in Std.Date.Date_t format.
      **************************************************************************/
-    EXPORT  Time_t AdjustDate(Std.Date.Date_t the_date,
-                              INTEGER2 delta_years = 0,
-                              INTEGER2 delta_months = 0,
-                              INTEGER2 delta_days = 0) := BEGINC++
+    EXPORT  Std.Date.Date_t AdjustDate(Std.Date.Date_t the_date,
+                                       INTEGER2 delta_years = 0,
+                                       INTEGER2 delta_months = 0,
+                                       INTEGER2 delta_days = 0) := BEGINC++
         #option pure
         #include <time.h>
         #body
@@ -664,84 +668,64 @@ EXPORT  SysTime := MODULE,FORWARD
         
         return result;
     ENDC++;
+    
+    /***************************************************************************
+     * Self test
+     **************************************************************************/
+    EXPORT  __selfTest := MODULE
+        
+        SHARED  Time_t          testTime := 1356998400;         // UTC Time since epoch for midnight Jan. 1, 2013
+        SHARED  Std.Date.Date_t testDate := 20130101;           // Date for Jan. 1, 2013
+        SHARED  Time_t          adjustedTestTime := 1356994800; // UTC time since epoch for Dec. 31, 2012 @ 11pm
+        SHARED  Std.Date.Date_t adjustedTestDate := 20121231;   // Date for Dec. 31, 2012
+        SHARED  STRING          fullyFormattedTestTime := '2013-01-01T00:00:00';
+        SHARED  STRING          isoFormattedTestTime := '2013-01-01';
+        
+        SHARED  timeNow := CurrentUTCTimeInSeconds();
+        SHARED  preciseTimeNow := CurrentUTCTimeInSecondsWithPrecision();
+        SHARED  dateNow := CurrentDate();
+        SHARED  constructedTestTime := MakeTimeInSecondsFromTimeParts(2013,1,1);
+        SHARED  testTimeDict := MakeTMDictFromTimeInSeconds(testTime);
+        SHARED  testDateDict := MakeTMDictFromDate(testDate);
+        SHARED  timeFromTimeDict := MakeTimeInSecondsFromTMDict(testTimeDict);
+        SHARED  timeFromDateDict := MakeTimeInSecondsFromTMDict(testDateDict);
+        SHARED  dateFromTimeDict := MakeDateFromTMDict(testTimeDict);
+        SHARED  dateFromDateDict := MakeDateFromTMDict(testDateDict);
+        SHARED  formattedTestTime := FormattedTime(testTime);
+        SHARED  dateFromTestTime := DateFromTimeInSeconds(testTime);
+        SHARED  isoDateNow := CurrentISODate();
+        SHARED  localTimeZoneOffsetStr := LocalTimeZoneOffset();
+        SHARED  testTimeMinusOneHour := AdjustTimeInSeconds(testTime,delta_hours:=-1);
+        SHARED  testDateMinusOneDay := AdjustDate(testDate,delta_days:=-1);
+        
+        EXPORT  testAll :=
+            [
+                ASSERT(timeNow > testTime, 'Time now not greater than test time'),
+                ASSERT(preciseTimeNow > testTime, 'Precise time now not greater than test time'),
+                ASSERT(dateNow > testDate, 'Date now not greater than test date'),
+                ASSERT(constructedTestTime = testTime, 'Constructed test time not equal to test time'),
+                ASSERT(TM(testTimeDict).Year = 2013, 'Test time dictionary year incorrect'),
+                ASSERT(TM(testTimeDict).MonthNum = 1, 'Test time dictionary month incorrect'),
+                ASSERT(TM(testTimeDict).Day = 1, 'Test time dictionary day incorrect'),
+                ASSERT(TM(testTimeDict).Hour = 0, 'Test time dictionary hour incorrect'),
+                ASSERT(TM(testTimeDict).Minute = 0, 'Test time dictionary minute incorrect'),
+                ASSERT(TM(testTimeDict).Second = 0, 'Test time dictionary second incorrect'),
+                ASSERT(TM(testDateDict).Year = 2013, 'Test date dictionary year incorrect'),
+                ASSERT(TM(testDateDict).MonthNum = 1, 'Test date dictionary month incorrect'),
+                ASSERT(TM(testDateDict).Day = 1, 'Test date dictionary day incorrect'),
+                ASSERT(TM(testDateDict).Hour = 0, 'Test date dictionary hour incorrect'),
+                ASSERT(TM(testDateDict).Minute = 0, 'Test date dictionary minute incorrect'),
+                ASSERT(TM(testDateDict).Second = 0, 'Test date dictionary second incorrect'),
+                ASSERT(timeFromTimeDict = timeFromDateDict, 'Times from test time and test date dictionaries not equal'),
+                ASSERT(dateFromTimeDict = dateFromDateDict, 'Dates from test time and test date dictionaries not equal'),
+                ASSERT(formattedTestTime = fullyFormattedTestTime, 'Fully formatted test time incorrect'),
+                ASSERT(dateFromTestTime = testDate, 'Date from test time not equal to test date'),
+                ASSERT(isoDateNow > isoFormattedTestTime, 'Current ISO Date not greater than test ISO date'),
+                ASSERT(localTimeZoneOffsetStr != '', 'Local time zone offset string is empty'),
+                ASSERT(testTimeMinusOneHour = adjustedTestTime, 'Adjusted test time incorrect'),
+                ASSERT(testDateMinusOneDay = adjustedTestDate, 'Adjusted test date incorrect')
+            ];
+        
+    END;    // __selfTest Module
 
 END;    // SysTime Module
-
-/*******************************************************************************
-// Example ECL
-
-timeNow := SysTime.CurrentUTCTimeInSeconds();
-
-OUTPUT(timeNow,NAMED('CurrentUTCTimeInSeconds'));
-// 1377863637
-
-OUTPUT(SysTime.CurrentUTCTimeInSecondsWithPrecision(),NAMED('CurrentUTCTimeInSecondsWithPrecision'));
-// 1377863637.162567
-
-OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=FALSE),NAMED('FormattedTimeUTC'));
-// 2013-08-30T11:53:57
-
-OUTPUT(SysTime.FormattedTime(timeNow,as_local_time:=TRUE),NAMED('FormattedTimeLocal'));
-// 2013-08-30T06:53:57
-
-timeDictUTC := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=FALSE);
-OUTPUT(timeDictUTC,NAMED('MakeTMStructFromTimeInSecondsUTC'));
-//  ##  f   v
-//  1   9   0
-//  2   6   113
-//  3   3   11
-//  4   7   5
-//  5   4   30
-//  6   1   57
-//  7   8   241
-//  8   5   7
-//  9   2   53
-
-OUTPUT(SysTime.MakeTimeInSecondsFromTimeParts(2013,1,1,6,0,0),NAMED('MakeTimeInSecondsFromTimeParts20130101'));
-// 1357020000
-
-OUTPUT(SysTime.MakeTimeInSecondsFromTMDict(timeDictUTC),NAMED('MakeTimeInSecondsFromTMStructUTC'));
-// 1377863637
-
-timeDictLocal := SysTime.MakeTMDictFromTimeInSeconds(timeNow,as_local_time:=TRUE);
-OUTPUT(timeDictLocal,NAMED('MakeTMStructFromTimeInSecondsLocal'));
-//  ##  f   v
-//  1   9   1
-//  2   6   113
-//  3   3   6
-//  4   7   5
-//  5   4   30
-//  6   1   57
-//  7   8   241
-//  8   5   7
-//  9   2   53
-
-OUTPUT(SysTime.MakeTimeInSecondsFromTMDict(timeDictLocal),NAMED('MakeTimeInSecondsFromTMStructLocal'));
-// 1377845637
-
-OUTPUT(SysTime.TM(timeDictLocal).Year,NAMED('YearFromTMStructLocal'));
-// 2013
-
-OUTPUT(SysTime.DateFromTimeInSeconds(timeNow),NAMED('DateFromTimeInSeconds'));
-// 20130830
-
-OUTPUT(SysTime.CurrentDate(),NAMED('CurrentDate'));
-// 20130830
-
-OUTPUT(SysTime.CurrentISODate(),NAMED('CurrentISODate'));
-// 2013-08-30
-
-OUTPUT(SysTime.LocalTimeZoneOffset(),NAMED('LocalTimeZoneOffset'));
-// -0500
-
-OUTPUT(SysTime.LocalTimeZoneOffsetInSeconds(),NAMED('LocalTimeZoneOffsetInSeconds'));
-// -18000
-
-deltaTime := SysTime.AdjustTimeInSeconds(timeNow,delta_days:=1);
-OUTPUT(deltaTime,NAMED('AdjustTimeInSecondsOneDayForward'));
-// 1377950037
-
-OUTPUT(SysTime.AdjustDate(20131231,delta_days:=1),NAMED('AdjustDate'));
-// 20140101
-
-*******************************************************************************/
