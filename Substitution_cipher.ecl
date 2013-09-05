@@ -1,32 +1,18 @@
-IMPORT ML;
+
+
+EXPORT Substitution_cipher := MODULE,FORWARD
+  IMPORT Std;
+  EXPORT Bundle := MODULE(Std.BundleBase)
+    EXPORT Name := 'Substitution_cipher';
+    EXPORT Description := 'Replaces cipher text with a number pattern and compares the pattern to words in a dictionary';
+    EXPORT Authors := ['Richard Chapman','Charles Kaminsky'];
+    EXPORT License := 'http://www.apache.org/licenses/LICENSE-2.0';
+    EXPORT Copyright := 'Copyright (C) 2013 HPCC Systems';
+    EXPORT DependsOn := [];
+    EXPORT Version := '1.0.2';
+  END;
  
-/*************************************************************************** 
-
-                           BUNDLE DECLARATION
-
-**************************************************************************/
-EXPORT Bundle := MODULE(Std.BundleBase)
-  EXPORT Name := 'Substitution_cipher';
-  EXPORT Description := 'Replaces cipher text with a number pattern and compares the pattern to words in a dictionary';
-  EXPORT Authors := ['Gavin Witz'];
-  EXPORT License := 'http://www.apache.org/licenses/LICENSE-2.0';
-  EXPORT Copyright := 'Copyright (C) 2013 HPCC Systems';
-  EXPORT DependsOn := [];
-  EXPORT Version := '1.0.0';
-  EXPORT PlatformVersion := '4.0.0';
-END;
- 
-/*************************************************************************** 
-
-Given cipher text, the following ECL code decrypts the longest length word. 
-Once the longest word has been discovered, the resulting letter can be used 
-for the rest of the text
-
-One very fast trick is to find a word that is greater than six
-characters and determine it's pattern. For each unique letter in the word it is 
-assigned a sequential number. Example cipher text QWRGTRYTRQT = CONVENIENCE
-												                          12345365315   12345365315
-**************************************************************************/
+  IMPORT ML;
 
 layout_line := RECORD
 	STRING line;
@@ -58,7 +44,7 @@ LongestWord := SORT(dSplit,-length(word));
 
 ds_dic := DATASET('~thor::in::dictionary',layout_line,csv(terminator('\n'),separator(','), quote('')));
 
-ds_cipher := DATASET([LongestWord[1].word], layout_line);
+ds_cipher := DATASET('OHEQRSEXNXUXWXHE', layout_line);
 
 /*************************************************************************** 
     Returns the dictionary word if found or No Result
@@ -153,5 +139,6 @@ END;
 
 y3 := PROJECT(ds_dic, t3(LEFT));
 
-OUTPUT(dedup(y3(line NOT IN ['','no result'])),all);
-
+OUTPUT(dedup(y3(line NOT IN ['','no result'])),all);  
+  
+END;
