@@ -192,21 +192,21 @@ EXPORT  SysTime := MODULE,FORWARD
         else
         {
             char*               tz = NULL;
-            const char*         tzName = "TZ";
+            const char*         kTZName = "TZ";
     
-            tz = getenv(tzName);
-            setenv(tzName,"",1);
+            tz = getenv(kTZName);
+            setenv(kTZName,"",1);
             tzset();
             
             the_time = mktime(&timeInfo);
             
             if (tz)
             {
-                setenv(tzName,tz,1);
+                setenv(kTZName,tz,1);
             }
             else
             {
-                unsetenv(tzName);
+                unsetenv(kTZName);
             }
             tzset();
         }
@@ -635,6 +635,8 @@ EXPORT  SysTime := MODULE,FORWARD
         SHARED  Std.Date.Date_t adjustedTestDate := 20121231;   // Date for Dec. 31, 2012
         SHARED  STRING          fullyFormattedTestTime := '2013-01-01T00:00:00';
         SHARED  STRING          isoFormattedTestTime := '2013-01-01';
+        SHARED  STRING          testTimeZone := '-0500';
+        SHARED  INTEGER2        testTimeZoneSeconds := -18000;
         
         SHARED  timeNow := CurrentUTCTimeInSeconds();
         SHARED  dateNow := CurrentDate();
@@ -649,6 +651,7 @@ EXPORT  SysTime := MODULE,FORWARD
         SHARED  dateFromTestTime := DateFromTimeInSeconds(testTime);
         SHARED  isoDateNow := CurrentISODate();
         SHARED  localTimeZoneOffsetStr := LocalTimeZoneOffset();
+        SHARED  oneTimeZoneOffsetNum := TimeZoneOffsetToSeconds(testTimeZone);
         SHARED  testTimeMinusOneHour := AdjustTimeInSeconds(testTime,delta_hours:=-1);
         SHARED  testDateMinusOneDay := AdjustDate(testDate,delta_days:=-1);
         
@@ -675,6 +678,7 @@ EXPORT  SysTime := MODULE,FORWARD
                 ASSERT(dateFromTestTime = testDate, 'Date from test time not equal to test date'),
                 ASSERT(isoDateNow > isoFormattedTestTime, 'Current ISO Date not greater than test ISO date'),
                 ASSERT(localTimeZoneOffsetStr != '', 'Local time zone offset string is empty'),
+                ASSERT(oneTimeZoneOffsetNum = testTimeZoneSeconds, 'Time zone ' + testTimeZone + ' string not correctly translated to seconds'),
                 ASSERT(testTimeMinusOneHour = adjustedTestTime, 'Adjusted test time incorrect'),
                 ASSERT(testDateMinusOneDay = adjustedTestDate, 'Adjusted test date incorrect')
             ];
