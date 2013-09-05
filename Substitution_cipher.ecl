@@ -9,7 +9,7 @@ EXPORT Substitution_cipher := MODULE,FORWARD
     EXPORT License := 'http://www.apache.org/licenses/LICENSE-2.0';
     EXPORT Copyright := 'Copyright (C) 2013 HPCC Systems';
     EXPORT DependsOn := [];
-    EXPORT Version := '1.0.2';
+    EXPORT Version := '1.0.1';
   END;
  
   IMPORT ML;
@@ -44,7 +44,7 @@ LongestWord := SORT(dSplit,-length(word));
 
 ds_dic := DATASET('~thor::in::dictionary',layout_line,csv(terminator('\n'),separator(','), quote('')));
 
-ds_cipher := DATASET('OHEQRSEXNXUXWXHE', layout_line);
+ds_cipher := DATASET([LongestWord[1].word], layout_line);
 
 /*************************************************************************** 
     Returns the dictionary word if found or No Result
