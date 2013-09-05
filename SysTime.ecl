@@ -49,7 +49,7 @@ EXPORT  SysTime := MODULE,FORWARD
      *      - Second                    0-59
      *      - DayOfWeekNum              0-6 (0 = Sunday)
      *      - DayOfYearNum              0-365 (0 = January 1)
-     *		- WeekOfYearNum				Week number within year, according to ISO 8601 (note, Monday is the first day of a week)
+     *      - WeekOfYearNum             Week number within year, according to ISO 8601 (note, Monday is the first day of a week)
      *      - IsDaylightSavingsTime     TRUE | FALSE
      *      - IsLeapYear                TRUE | FALSE
      *
@@ -109,7 +109,7 @@ EXPORT  SysTime := MODULE,FORWARD
         EXPORT  Second := tmValues[TMField.tm_sec].v;
         EXPORT  DayOfWeekNum := tmValues[TMField.tm_wday].v;
         EXPORT  DayOfYearNum := tmValues[TMField.tm_yday].v;
-        EXPORT	WeekOfYearNum := TRUNCATE((tmValues[TMField.tm_yday].v + 7 - IF(tmValues[TMField.tm_wday].v > 0,(tmValues[TMField.tm_wday].v - 1),6)) / 7) + 1;
+        EXPORT  WeekOfYearNum := TRUNCATE((tmValues[TMField.tm_yday].v + 7 - IF(tmValues[TMField.tm_wday].v > 0,(tmValues[TMField.tm_wday].v - 1),6)) / 7) + 1;
         EXPORT  IsDaylightSavingsTime := (tmValues[TMField.tm_isdst].v > 0);
         EXPORT  IsLeapYear := ((Year % 4 = 0) AND (Year % 100 != 0)) OR (Year % 400 = 0);
     END;
