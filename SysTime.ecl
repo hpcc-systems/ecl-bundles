@@ -21,21 +21,24 @@ EXPORT  SysTime := MODULE,FORWARD
      * 
      * Exported Functions
      *
-     *  - CurrentUTCTimeInSeconds
-     *  - MakeTimeInSecondsFromTimeParts
-     *  - MakeTMDictFromTimeInSeconds
-     *  - MakeTMDictFromDate
-     *  - MakeTimeInSecondsFromTMDict
-     *  - MakeDateFromTMDict
-     *  - FormattedTime
-     *  - DateFromTimeInSeconds
-     *  - CurrentDate
-     *  - CurrentISODate
-     *  - TimeZoneOffsetToSeconds
-     *  - LocalTimeZoneOffset
-     *  - LocalTimeZoneOffsetInSeconds
-     *  - AdjustTimeInSeconds
-     *  - AdjustDate
+     *    FUNCTION NAME                     CONVERSION PERFORMED
+     *    =============                     ====================
+     *  - CurrentUTCTimeInSeconds           ()              -> Time_t
+     *  - FormattedTime                     Time_t          -> STRING
+     *  - MakeTimeInSecondsFromTimeParts    timeParts       -> Time_t
+     *  - MakeTMDictFromTimeInSeconds       Time_t          -> TMDict
+     *  - MakeTimeInSecondsFromTMDict       TMDict          -> Time_t
+     *  - MakeTMDictFromDate                Std.Date.Date_t -> TMDict
+     *  - MakeDateFromTMDict                TMDict          -> Std.Date.Date_t
+     *  - DateFromTimeInSeconds             Time_t          -> Std.Date.Date_t
+     *  - TimeInSecondsFromDate             Std.Date.Date_t -> Time_t
+     *  - CurrentDate                       ()              -> Std.Date.Date_t
+     *  - CurrentISODate                    ()              -> String
+     *  - TimeZoneOffsetToSeconds           String          -> INTEGER4
+     *  - LocalTimeZoneOffset               ()              -> STRING
+     *  - LocalTimeZoneOffsetInSeconds      ()              -> INTEGER4
+     *  - AdjustTimeInSeconds               Time_t          -> Time_t
+     *  - AdjustDate                        Std.Date.Date_t -> Std.Date.Date_t
      *
      * Exported Modules
      *
@@ -49,7 +52,7 @@ EXPORT  SysTime := MODULE,FORWARD
      *      - Second                    0-59
      *      - DayOfWeekNum              0-6 (0 = Sunday)
      *      - DayOfYearNum              0-365 (0 = January 1)
-     *      - WeekOfYearNum             Week number within year, according to ISO 8601 (note, Monday is the first day of a week)
+     *      - WeekOfYearNum             1-53; Adheres to ISO 8601 (significantly, Monday is the first day of a week)
      *      - IsDaylightSavingsTime     TRUE | FALSE
      *      - IsLeapYear                TRUE | FALSE
      *
@@ -133,6 +136,63 @@ EXPORT  SysTime := MODULE,FORWARD
         unsigned int    result = time(NULL);
         
         return result;
+    ENDC++;
+    
+    /***************************************************************************
+     * Converts a UTC time represented in seconds to a readable string.
+     *
+     * @param   time_in_seconds Integer representing the number of seconds
+     *                          since epoch (UTC).
+     * @param   format          The string format to use to create the
+     *                          result.  See man page for strftime.  The
+     *                          resulting string should not be greater
+     *                          than 256 bytes.  Optional; defaults to
+     *                          '%FT%T' which is YYYY-MM-DDTHH:MM:SS.
+     * @param   as_local_time   If TRUE, time_in_seconds is converted to
+     *                          local time during the conversion to a
+     *                          readable value.  Optional; defaults to FALSE.
+     * 
+     * @return                  A string representing the given time converted
+     *                          to a readable date/time as per the value of
+     *                          the format argument.
+     **************************************************************************/
+    EXPORT  STRING FormattedTime(Time_t time_in_seconds,
+                                 VARSTRING format = '%FT%T',
+                                 BOOLEAN as_local_time = FALSE) := BEGINC++
+        #option pure
+        #include <time.h>
+        
+        #body
+        
+        struct tm           timeInfo;
+        time_t              theTime = time_in_seconds;
+        size_t              kBufferSize = 256;
+        char                buffer[kBufferSize];
+        int                 numCharsInResult = 0;
+        
+        memset(buffer,kBufferSize,0);
+        
+        // Create time parts differently depending on whether you need
+        // UTC or local time
+        if (as_local_time)
+        {
+            memcpy(&timeInfo,localtime(&theTime),sizeof(timeInfo));
+        }
+        else
+        {
+            memcpy(&timeInfo,gmtime(&theTime),sizeof(timeInfo));
+        }
+        
+        numCharsInResult = strftime(buffer,kBufferSize,format,&timeInfo);
+        
+        __lenResult = numCharsInResult;
+        __result = NULL;
+        
+        if (__lenResult > 0)
+        {
+            __result = reinterpret_cast<char*>(rtlMalloc(__lenResult));
+            memcpy(__result,buffer,__lenResult);
+        }
     ENDC++;
     
     /***************************************************************************
@@ -299,25 +359,6 @@ EXPORT  SysTime := MODULE,FORWARD
     END;
     
     /***************************************************************************
-     * Converts a standard date to a TMDict record, which contains individual
-     * time components broken out.
-     *
-     * @param   the_date        A date in Std.Date.Date_t format.
-     * 
-     * @return                  TMDict instance.
-     **************************************************************************/
-    EXPORT  TMDict MakeTMDictFromDate(Std.Date.Date_t the_date) := FUNCTION
-        seconds := MakeTimeInSecondsFromTimeParts
-            (
-                Std.Date.Year(the_date),
-                Std.Date.Month(the_date),
-                Std.Date.Day(the_date)
-            );
-        
-        RETURN MakeTMDictFromTimeInSeconds(seconds);
-    END;
-    
-    /***************************************************************************
      * Converts a TMDict record, which contains individual time components,
      * to a UTC time.
      *
@@ -347,6 +388,25 @@ EXPORT  SysTime := MODULE,FORWARD
     END;
     
     /***************************************************************************
+     * Converts a standard date to a TMDict record, which contains individual
+     * time components broken out.
+     *
+     * @param   the_date        A date in Std.Date.Date_t format.
+     * 
+     * @return                  TMDict instance.
+     **************************************************************************/
+    EXPORT  TMDict MakeTMDictFromDate(Std.Date.Date_t the_date) := FUNCTION
+        seconds := MakeTimeInSecondsFromTimeParts
+            (
+                Std.Date.Year(the_date),
+                Std.Date.Month(the_date),
+                Std.Date.Day(the_date)
+            );
+        
+        RETURN MakeTMDictFromTimeInSeconds(seconds);
+    END;
+    
+    /***************************************************************************
      * Converts a TMDict record, which contains individual time components,
      * to a standard date.
      *
@@ -364,63 +424,6 @@ EXPORT  SysTime := MODULE,FORWARD
         
         RETURN (year * 10000) + (month * 100) + day;
     END;
-    
-    /***************************************************************************
-     * Converts a UTC time represented in seconds to a readable string.
-     *
-     * @param   time_in_seconds Integer representing the number of seconds
-     *                          since epoch (UTC).
-     * @param   format          The string format to use to create the
-     *                          result.  See man page for strftime.  The
-     *                          resulting string should not be greater
-     *                          than 256 bytes.  Optional; defaults to
-     *                          '%FT%T' which is YYYY-MM-DDTHH:MM:SS.
-     * @param   as_local_time   If TRUE, time_in_seconds is converted to
-     *                          local time during the conversion to a
-     *                          readable value.  Optional; defaults to FALSE.
-     * 
-     * @return                  A string representing the given time converted
-     *                          to a readable date/time as per the value of
-     *                          the format argument.
-     **************************************************************************/
-    EXPORT  STRING FormattedTime(Time_t time_in_seconds,
-                                 VARSTRING format = '%FT%T',
-                                 BOOLEAN as_local_time = FALSE) := BEGINC++
-        #option pure
-        #include <time.h>
-        
-        #body
-        
-        struct tm           timeInfo;
-        time_t              theTime = time_in_seconds;
-        size_t              kBufferSize = 256;
-        char                buffer[kBufferSize];
-        int                 numCharsInResult = 0;
-        
-        memset(buffer,kBufferSize,0);
-        
-        // Create time parts differently depending on whether you need
-        // UTC or local time
-        if (as_local_time)
-        {
-            memcpy(&timeInfo,localtime(&theTime),sizeof(timeInfo));
-        }
-        else
-        {
-            memcpy(&timeInfo,gmtime(&theTime),sizeof(timeInfo));
-        }
-        
-        numCharsInResult = strftime(buffer,kBufferSize,format,&timeInfo);
-        
-        __lenResult = numCharsInResult;
-        __result = NULL;
-        
-        if (__lenResult > 0)
-        {
-            __result = reinterpret_cast<char*>(rtlMalloc(__lenResult));
-            memcpy(__result,buffer,__lenResult);
-        }
-    ENDC++;
     
     /***************************************************************************
      * Converts time in seconds into a date.
@@ -460,6 +463,26 @@ EXPORT  SysTime := MODULE,FORWARD
         
         return theDate;
     ENDC++;
+    
+    /***************************************************************************
+     * Converts a standard date into time in seconds.
+     *
+     * @param   the_date        A date in Std.Date.Date_t format.
+     * @param   as_local_time   If TRUE, the_date is interpreted as local time.
+     *                          Optional; defaults to FALSE.
+     * 
+     * @return  The time in seconds since epoch (UTC).
+     **************************************************************************/
+    EXPORT  Time_t TimeInSecondsFromDate(Std.Date.Date_t the_date,
+                                         BOOLEAN as_local_time = FALSE) := FUNCTION
+        RETURN MakeTimeInSecondsFromTimeParts
+            (
+                Std.Date.Year(the_date),
+                Std.Date.Month(the_date),
+                Std.Date.Day(the_date),
+                as_local_time := as_local_time
+            );
+    END;
     
     /***************************************************************************
      * Returns the current date in standard library format.
@@ -651,6 +674,7 @@ EXPORT  SysTime := MODULE,FORWARD
         SHARED  dateFromDateDict := MakeDateFromTMDict(testDateDict);
         SHARED  formattedTestTime := FormattedTime(testTime);
         SHARED  dateFromTestTime := DateFromTimeInSeconds(testTime);
+        SHARED  timeFromTestDate := TimeInSecondsFromDate(testDate);
         SHARED  isoDateNow := CurrentISODate();
         SHARED  localTimeZoneOffsetStr := LocalTimeZoneOffset();
         SHARED  oneTimeZoneOffsetNum := TimeZoneOffsetToSeconds(testTimeZone);
@@ -684,6 +708,7 @@ EXPORT  SysTime := MODULE,FORWARD
                 ASSERT(dateFromTimeDict = dateFromDateDict, 'Dates from test time and test date dictionaries not equal: (' + dateFromTimeDict + '=' + dateFromDateDict + ')'),
                 ASSERT(formattedTestTime = fullyFormattedTestTime, 'Fully formatted test time incorrect: (' + formattedTestTime + '=' + fullyFormattedTestTime + ')'),
                 ASSERT(dateFromTestTime = testDate, 'Date from test time not equal to test date: (' + dateFromTestTime + '=' + testDate + ')'),
+                ASSERT(timeFromTestDate = testTime, 'Time from test date not equal to test time: (' + timeFromTestDate + '=' + testTime + ')'),
                 ASSERT(isoDateNow > isoFormattedTestTime, 'Current ISO Date not greater than test ISO date: (' + isoDateNow + '>' + isoFormattedTestTime + ')'),
                 ASSERT(localTimeZoneOffsetStr != '', 'Local time zone offset string is empty: (' + localTimeZoneOffsetStr + '!=' + '\'\''),
                 ASSERT(oneTimeZoneOffsetNum = testTimeZoneSeconds, 'Time zone ' + testTimeZone + ' string not correctly translated to seconds: (' + oneTimeZoneOffsetNum + '=' + testTimeZoneSeconds + ')'),
