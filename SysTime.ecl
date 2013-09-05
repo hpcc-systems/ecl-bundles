@@ -49,6 +49,7 @@ EXPORT  SysTime := MODULE,FORWARD
      *      - Second                    0-59
      *      - DayOfWeekNum              0-6 (0 = Sunday)
      *      - DayOfYearNum              0-365 (0 = January 1)
+     *		- WeekOfYearNum				Week number within year, according to ISO 8601 (note, Monday is the first day of a week)
      *      - IsDaylightSavingsTime     TRUE | FALSE
      *      - IsLeapYear                TRUE | FALSE
      *
@@ -108,6 +109,7 @@ EXPORT  SysTime := MODULE,FORWARD
         EXPORT  Second := tmValues[TMField.tm_sec].v;
         EXPORT  DayOfWeekNum := tmValues[TMField.tm_wday].v;
         EXPORT  DayOfYearNum := tmValues[TMField.tm_yday].v;
+        EXPORT	WeekOfYearNum := TRUNCATE((tmValues[TMField.tm_yday].v + 7 - IF(tmValues[TMField.tm_wday].v > 0,(tmValues[TMField.tm_wday].v - 1),6)) / 7) + 1;
         EXPORT  IsDaylightSavingsTime := (tmValues[TMField.tm_isdst].v > 0);
         EXPORT  IsLeapYear := ((Year % 4 = 0) AND (Year % 100 != 0)) OR (Year % 400 = 0);
     END;
@@ -666,12 +668,18 @@ EXPORT  SysTime := MODULE,FORWARD
                 ASSERT(TM(testTimeDict).Hour = 0, 'Test time dictionary hour incorrect'),
                 ASSERT(TM(testTimeDict).Minute = 0, 'Test time dictionary minute incorrect'),
                 ASSERT(TM(testTimeDict).Second = 0, 'Test time dictionary second incorrect'),
+                ASSERT(TM(testTimeDict).DayOfWeekNum = 2, 'Test time dictionary day of week number incorrect'),
+                ASSERT(TM(testTimeDict).DayOfYearNum = 0, 'Test time dictionary day of year number incorrect'),
+                ASSERT(TM(testTimeDict).WeekOfYearNum = 1, 'Test time dictionary week number of year number incorrect'),
                 ASSERT(TM(testDateDict).Year = 2013, 'Test date dictionary year incorrect'),
                 ASSERT(TM(testDateDict).MonthNum = 1, 'Test date dictionary month incorrect'),
                 ASSERT(TM(testDateDict).Day = 1, 'Test date dictionary day incorrect'),
                 ASSERT(TM(testDateDict).Hour = 0, 'Test date dictionary hour incorrect'),
                 ASSERT(TM(testDateDict).Minute = 0, 'Test date dictionary minute incorrect'),
                 ASSERT(TM(testDateDict).Second = 0, 'Test date dictionary second incorrect'),
+                ASSERT(TM(testDateDict).DayOfWeekNum = 2, 'Test date dictionary day of week number incorrect'),
+                ASSERT(TM(testDateDict).DayOfYearNum = 0, 'Test date dictionary day of year number incorrect'),
+                ASSERT(TM(testDateDict).WeekOfYearNum = 1, 'Test date dictionary week number of year number incorrect'),
                 ASSERT(timeFromTimeDict = timeFromDateDict, 'Times from test time and test date dictionaries not equal'),
                 ASSERT(dateFromTimeDict = dateFromDateDict, 'Dates from test time and test date dictionaries not equal'),
                 ASSERT(formattedTestTime = fullyFormattedTestTime, 'Fully formatted test time incorrect'),
