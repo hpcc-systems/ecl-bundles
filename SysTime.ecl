@@ -22,7 +22,6 @@ EXPORT  SysTime := MODULE,FORWARD
      * Exported Functions
      *
      *  - CurrentUTCTimeInSeconds
-     *  - CurrentUTCTimeInSecondsWithPrecision
      *  - MakeTimeInSecondsFromTimeParts
      *  - MakeTMDictFromTimeInSeconds
      *  - MakeTMDictFromDate
@@ -129,36 +128,7 @@ EXPORT  SysTime := MODULE,FORWARD
         #include <time.h>
         #body
         
-        struct timeval  tv;
-        unsigned int    result = 0;
-        
-        if (gettimeofday(&tv,NULL) == 0)
-        {
-            result = tv.tv_sec;
-        }
-        
-        return result;
-    ENDC++;
-    
-    /***************************************************************************
-     * Current UTC time in seconds and microseconds.
-     * 
-     * @return  The current UTC time in seconds since epoch, including
-     *          microsecond precision.
-     **************************************************************************/
-    EXPORT  REAL8 CurrentUTCTimeInSecondsWithPrecision() := BEGINC++
-        #option pure
-        #option action
-        #include <time.h>
-        #body
-        
-        struct timeval  tv;
-        double          result = 0.0;
-        
-        if (gettimeofday(&tv,NULL) == 0)
-        {
-            result = tv.tv_sec + (tv.tv_usec / 1000000.0); 
-        }
+        unsigned int    result = time(NULL);
         
         return result;
     ENDC++;
@@ -197,8 +167,6 @@ EXPORT  SysTime := MODULE,FORWARD
         #option pure
         #include <time.h>
         
-        static pthread_mutex_t     gGetEnvMutex = PTHREAD_MUTEX_INITIALIZER;
-        
         #body
     
         struct tm   timeInfo;
@@ -225,11 +193,6 @@ EXPORT  SysTime := MODULE,FORWARD
         {
             char*               tz = NULL;
             const char*         tzName = "TZ";
-            
-            // Mutex stuff required because env manipulation is not
-            // thread safe
-            
-            pthread_mutex_lock(&gGetEnvMutex);
     
             tz = getenv(tzName);
             setenv(tzName,"",1);
@@ -246,8 +209,6 @@ EXPORT  SysTime := MODULE,FORWARD
                 unsetenv(tzName);
             }
             tzset();
-    
-            pthread_mutex_unlock(&gGetEnvMutex);
         }
         
         return the_time;
@@ -285,11 +246,11 @@ EXPORT  SysTime := MODULE,FORWARD
             // UTC or local time
             if (use_local)
             {
-                localtime_r(&theTime,&timeInfo);
+                memcpy(&timeInfo,localtime(&theTime),sizeof(timeInfo));
             }
             else
             {
-                gmtime_r(&theTime,&timeInfo);
+                memcpy(&timeInfo,gmtime(&theTime),sizeof(timeInfo));
             }
             
             // Set the internal response variables so the caller knows how
@@ -425,9 +386,6 @@ EXPORT  SysTime := MODULE,FORWARD
                                  BOOLEAN as_local_time = FALSE) := BEGINC++
         #option pure
         #include <time.h>
-        #include <pthread.h>
-        
-        static pthread_mutex_t     gStrftimeMutex = PTHREAD_MUTEX_INITIALIZER;
         
         #body
         
@@ -443,17 +401,14 @@ EXPORT  SysTime := MODULE,FORWARD
         // UTC or local time
         if (as_local_time)
         {
-            localtime_r(&theTime,&timeInfo);
+            memcpy(&timeInfo,localtime(&theTime),sizeof(timeInfo));
         }
         else
         {
-            gmtime_r(&theTime,&timeInfo);
+            memcpy(&timeInfo,gmtime(&theTime),sizeof(timeInfo));
         }
         
-        // Mutexes required because strftime() is not thread safe
-        pthread_mutex_lock(&gStrftimeMutex);
         numCharsInResult = strftime(buffer,kBufferSize,format,&timeInfo);
-        pthread_mutex_unlock(&gStrftimeMutex);
         
         __lenResult = numCharsInResult;
         __result = NULL;
@@ -490,11 +445,11 @@ EXPORT  SysTime := MODULE,FORWARD
         // UTC or local time
         if (as_local_time)
         {
-            localtime_r(&theTime,&timeInfo);
+            memcpy(&timeInfo,localtime(&theTime),sizeof(timeInfo));
         }
         else
         {
-            gmtime_r(&theTime,&timeInfo);
+            memcpy(&timeInfo,gmtime(&theTime),sizeof(timeInfo));
         }
         
         theDate = (timeInfo.tm_year + 1900) * 10000;
@@ -608,7 +563,7 @@ EXPORT  SysTime := MODULE,FORWARD
         struct tm       timeInfo;
         time_t          theTime = time_in_seconds;
     
-        localtime_r(&theTime,&timeInfo);
+        memcpy(&timeInfo,localtime(&theTime),sizeof(timeInfo));
         
         timeInfo.tm_year += delta_years;
         timeInfo.tm_mon += delta_months;
@@ -682,7 +637,6 @@ EXPORT  SysTime := MODULE,FORWARD
         SHARED  STRING          isoFormattedTestTime := '2013-01-01';
         
         SHARED  timeNow := CurrentUTCTimeInSeconds();
-        SHARED  preciseTimeNow := CurrentUTCTimeInSecondsWithPrecision();
         SHARED  dateNow := CurrentDate();
         SHARED  constructedTestTime := MakeTimeInSecondsFromTimeParts(2013,1,1);
         SHARED  testTimeDict := MakeTMDictFromTimeInSeconds(testTime);
@@ -701,7 +655,6 @@ EXPORT  SysTime := MODULE,FORWARD
         EXPORT  testAll :=
             [
                 ASSERT(timeNow > testTime, 'Time now not greater than test time'),
-                ASSERT(preciseTimeNow > testTime, 'Precise time now not greater than test time'),
                 ASSERT(dateNow > testDate, 'Date now not greater than test date'),
                 ASSERT(constructedTestTime = testTime, 'Constructed test time not equal to test time'),
                 ASSERT(TM(testTimeDict).Year = 2013, 'Test time dictionary year incorrect'),
