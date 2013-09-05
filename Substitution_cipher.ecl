@@ -43,7 +43,7 @@ LongestWord := SORT(dSplit,-length(word));
 
 ds_dic := DATASET('~thor::in::dictionary',layout_line,csv(terminator('\n'),separator(','), quote('')));
 
-ds_cipher := DATASET('OHEQRSEXNXUXWXHE', layout_line);
+ds_cipher := DATASET([LongestWord[1].word], layout_line);
 
 /*************************************************************************** 
     Returns the dictionary word if found or No Result
