@@ -72,6 +72,7 @@ EXPORT  SysTime := MODULE,FORWARD
         EXPORT Copyright := 'Copyright (C) 2013, Dun & Bradstreet';
         EXPORT DependsOn := [];
         EXPORT Version := '1.0.0';
+        EXPORT PlatformVersion := '4.0.0';
     END;
     
     /***************************************************************************
