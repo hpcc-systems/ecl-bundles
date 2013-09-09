@@ -243,16 +243,16 @@ END;
 /*
   EXAMPLES
 
-  LZLib.GetRemoteFile('http://dumps.wikimedia.org/enwiki/20130403/enwiki-20130403-pages-meta-current.xml.bz2');
-  LZLib.UnzipFile('test2.gz');
-  LZLib.UnzipFile('test.zip','/var/lib/HPCCSystems/someotherdropzone/');
-  LZLib.UnzipAndSprayDelimited('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
-  LZLib.UnzipAndSprayDelimited('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor',,,,,TRUE,,TRUE);
-  LZLib.UnzipAndSprayDelimited('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.gz',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
-  LZLib.UnzipAndSprayXML('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.gz',,'Row',,'mythor','test',,,,TRUE,,TRUE,TRUE);
-  LZLib.ZipFileList('test.zip');
-  LZLib.FileList();
-  LZLib.TopRows('test.txt',,20);
-  LZLib.RowCountXML('test.xml',,'Row');
+  CloudTools.GetRemoteFile('http://dumps.wikimedia.org/enwiki/20130403/enwiki-20130403-pages-meta-current.xml.bz2');
+  CloudTools.UnzipFile('test2.gz');
+  CloudTools.UnzipFile('test.zip','/var/lib/HPCCSystems/someotherdropzone/');
+  CloudTools.UnzipAndSprayDelimited('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
+  CloudTools.UnzipAndSprayDelimited('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.zip',,,,,'mythor',,,,,TRUE,,TRUE);
+  CloudTools.UnzipAndSprayDelimited('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.gz',,,,,'mythor','test',,,,TRUE,,TRUE,,TRUE);
+  CloudTools.UnzipAndSprayXML('192.168.6.130','/var/lib/HPCCSystems/mydropzone/test.gz',,'Row',,'mythor','test',,,,TRUE,,TRUE,TRUE);
+  CloudTools.ZipFileList('test.zip');
+  CloudTools.FileList();
+  CloudTools.TopRows('test.txt',,20);
+  CloudTools.RowCountXML('test.xml',,'Row');
 
 */
