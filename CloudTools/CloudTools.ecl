@@ -86,36 +86,43 @@ EXPORT CloudTools := MODULE,FORWARD
 
 /**
 * Get a listing of the files in the specified zip file
-* N.B. Work in progress.  Need to actually enable the use of the parameter for
-* forcing the use of a specific compression program.  Also need to incorporate
-* support for unzip, which enables multiple files within a zip file.
+* N.B. Work in progress.
 *
 * @param sFileName             The name of the file
 * @param sPath                 Optional: The absolute path where the file resides
 * @param sCompressionProgram   Optional: Used to force a specific program (e.g. gzip, bzip2)
 * @return                      Dataset containing a listing of files in the specified zip file
 */
-EXPORT ZipFileList(STRING sFilename,STRING sPath=sDefaultPath,STRING sCompressionProgram=''):=TABLE(PIPE('gzip -l '+sFullPath+IF(REGEXFIND('.zip$',sPath+sFilename),' -S .zip',''),{STRING s;},CSV),{STRING filename:=REGEXFIND('([^\\/]+)$',s,1);})[2..];
-
+  EXPORT ZipFileList(STRING sFilename,STRING sPath=sDefaultPath,STRING sCompressionProgram=''):=FUNCTION
+    lFileList:={STRING filename;};
+    sZipType:=std.Str.ToUpperCase(REGEXFIND('([^.]+)$',sFilename,1));
+    sZipList:=MAP(
+      sZipType IN ['BZ2','BA','TBZ2','TBZ'] OR sCompressionProgram='bz2' => DATASET([{REGEXREPLACE('([.][^.]+$)',sFilename,'')}],lFileList),
+      sZipType='ZIP' OR sCompressionProgram='unzip' => PIPE('bash -c "unzip -l '+sPath+sFilename+' | grep \':\' | grep -v \'Archive\' | sed \'s/^.* //g\'"',lFileList,CSV),
+      PIPE('bash -c "gzip -l '+sPath+sFilename+' | tail -1 | sed \'s/^.*[/]//g\'"',lFileList,CSV)
+    );
+    RETURN sZipList;
+  END;
+  
 /**
 * Decompress the specified zip file
 *
 * @param sFileName              The name of the file
 * @param sPath                  Optional: The absolute path where the file resides
+* @param sFileToUnzip           Optional: The specific file within the zip to decompress (Default: '', indicating the first one found)
 * @param bKeepCompressed        Optional: Boolean indicating whether to keep the compressed file after decompressing (Default: TRUE)
 * @param sCompressionProgram    Optional: Used to force a specific program (e.g. gzip, bzip2)
 */
-  EXPORT UnzipFile(STRING sFilename,STRING sPath=sDefaultPath,BOOLEAN bKeepCompressed=TRUE,STRING sCompressionProgram=''):=FUNCTION
-    sZipType:=REGEXFIND('([^.]+)$',sFilename,1);
-    sZipProg:=MAP(
-      sCompressionProgram!='' => sCompressionProgram,
-      sZipType IN ['bz2','ba','tbz2','tbz'] => 'bzip2 -d ',
-      sZipType='zip' => 'gzip -S .zip -d ',
-      'gzip -d '
+  EXPORT UnzipFile(STRING sFilename,STRING sPath=sDefaultPath,STRING sFileToUnzip='',BOOLEAN bKeepCompressed=TRUE,STRING sCompressionProgram=''):=FUNCTION
+    sZipType:=std.Str.ToUpperCase(REGEXFIND('([^.]+)$',sFilename,1));
+    aUnzip:=MAP(
+      sZipType IN ['BZ2','BA','TBZ2','TBZ'] OR sCompressionProgram='bz2' => OUTPUT(PIPE('bzip2 -d '+sPath+sFilename,{STRING s;},CSV)),
+      sZipType='ZIP' OR sCompressionProgram='unzip' => OUTPUT(PIPE('bash -c "unzip '+sPath+sFilename+' '+sFileToUnzip+' -d '+sPath+'"',{STRING s;},CSV)),
+      OUTPUT(PIPE('gzip -d '+sPath+sFilename,{STRING s;},CSV))
     );
     RETURN SEQUENTIAL(
       IF(bKeepCompressed,OUTPUT(PIPE('cp '+sPath+sFilename+' '+sPath+sFilename+'.tmp',{STRING s;},CSV)),OUTPUT('No File Movement necessary')),
-      OUTPUT(PIPE(sZipProg+sFullPath,{STRING s;},CSV)),
+      aUnzip,
       IF(bKeepCompressed,OUTPUT(PIPE('mv '+sPath+sFilename+'.tmp '+sPath+sFilename,{STRING s;},CSV)),OUTPUT('No File Movement necessary'))
     );
   END;
@@ -222,6 +229,63 @@ EXPORT ZipFileList(STRING sFilename,STRING sPath=sDefaultPath,STRING sCompressio
     );
   END;
   
+/**
+* Unified Unzip and Spray, will perform either Delimited OR XML spray
+* (depending on whether the srcRowTag value is specified)
+*
+* @param sIP                      The IP address of the file
+* @param sFullPath                The full path and file name of the file to spray
+* @param maxrecordsize            Optional: The maximum record size (Default: 4096)
+* @param srcCSVseparator          Optional: The character used as the delimiter (Default: ',')
+* @param srcCSVterminator         Optional: The character(s) used as line terminator (Default: CR, CR/LF)
+* @param srcCSVquote              Optional: The character used to quote text (Default: ' " ')
+* @param srcRowTag                Optional: The tag used to delimit a row in the XML file (Default: '')
+* @param srcEncoding              Optional: The encoding to use (Default: utf-8)
+* @param destinationgroup         Name of the group into which to place the file (e.g. 'mythor')
+* @param destinationlogicalname   Optional: The name to give the file when sprayed (Default: same as original file name)
+* @param timout                   Optional: The timeout setting (Default: -1, indicating no timeout)
+* @param espserverIPport          Optional: Explicit protocol, IP, port and directory instructions (Default: '')
+* @param maxConnections           Optional: Maximum number of connections (Default: 1)
+* @param allowoverwrite           Optional: Boolean indicating whether to allow an overwrite if the file already exists on the cluster (Default: FALSE)
+* @param replicate                Optional: Boolean indicating whether to replicate (Default: FALSE)
+* @param compress                 Optional: Boolean indicating whether to compress the sprayed file (Default: FALSE)
+* @param sourceCsvEscape          Optional: Any escape characters that exist in the file (Default: '')
+* @param removewhendone           Optional: Boolean indicating whether to remove the de-compressed file when the operation is complete (Default: FALSE)
+*/
+  EXPORT UnzipAndSpray(
+    STRING sIP,
+    STRING sFullPath,
+    UNSIGNED maxrecordsize=4096,
+    STRING srcCSVseparator=',',
+    STRING srcCSVterminator='\n,\r\n',
+    STRING srcCSVquote='"',
+    STRING srcRowTag='',
+    STRING srcEncoding='utf8',
+    STRING destinationgroup,
+    STRING destinationlogicalname='',
+    UNSIGNED timout=-1,
+    STRING espserverIPport='',
+    UNSIGNED maxConnections=1,
+    BOOLEAN allowoverwrite=FALSE,
+    BOOLEAN replicate=FALSE,
+    BOOLEAN compress=FALSE,
+    STRING sourceCsvEscape='',
+    BOOLEAN removewhendone=FALSE
+  ):=FUNCTION
+    bXML:=srcRowTag<>'';
+    sPath:=REGEXREPLACE('[^\\/]+$',sFullPath,'');
+    sUnzippedFile:=ZipFileList(sFullPath)[1].filename;
+    sNewFile:=IF(destinationlogicalname='',sUnzippedFile,destinationlogicalname);
+    sFileToSpray:=sPath+sUnzippedFile;
+    RETURN SEQUENTIAL(
+      UnzipFile(sFullPath),
+      IF(bXML,
+        std.File.SprayDelimited(sIP,sFileToSpray,maxrecordsize,srcCSVseparator,srcCSVterminator,srcCSVquote,destinationgroup,sNewFile,timout,,maxConnections,allowoverwrite,replicate,compress,sourceCsvEscape),
+        std.File.SprayXML(sourceIP,sourcepath,maxrecordsize,srcRowTag,srcEncoding,destinationgroup,destinationlogicalname,timeout,espserverIPport,maxConnections,allowoverwrite,replicate,compress)
+      ),
+      IF(removewhendone,STD.File.DeleteExternalFile(sIP,sFileToSpray),OUTPUT('File '+sUnzippedFile+' was not removed'))
+    );
+  END;
 /*
   Functions in development and considered for future expansion
 
