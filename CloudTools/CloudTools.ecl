@@ -1,9 +1,9 @@
 EXPORT CloudTools := MODULE,FORWARD
   IMPORT Std;
   EXPORT Bundle := MODULE(Std.BundleBase)
-    EXPORT Name := 'LZLib';
+    EXPORT Name := 'CloudTools';
     EXPORT Description := 'Routines for performing Landing-Zone level file operations.';
-    EXPORT Authors := ['Edin Muharamagic','Jo Prichard','David Wheelock'];
+    EXPORT Authors := ['Edin Muharemagic','Jo Prichard','David Wheelock'];
     EXPORT License := 'http://www.apache.org/licenses/LICENSE-2.0';
     EXPORT Copyright := 'Copyright (C) 2013 HPCC Systems';
     EXPORT DependsOn := [];
@@ -80,7 +80,7 @@ EXPORT CloudTools := MODULE,FORWARD
 * @param sFileName   The name of the file
 * @param sPath       Optional: The absolute path where the file resides
 * @param sDelimiter  Optional: The character to use as the delimiter for row counting
-* @return            Positivie integer indicating the number of columns in the CSV file
+* @return            Positive integer indicating the number of columns in the CSV file
 */
   EXPORT ColumnCountDelimited(STRING sFilename,STRING sPath=sDefaultPath,sDelimiter=','):=(UNSIGNED)PIPE('bash -c "head -1 '+sPath+sFilename+' | sed \'s/[^,]//g\' | wc -c"',{STRING s;},CSV)[1].s;
 
