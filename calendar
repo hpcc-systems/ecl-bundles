@@ -41,7 +41,7 @@ EXPORT Calendar := MODULE
 	EXPORT STRING3		GetDayOfWeek(INTEGER4 GregorianDayCount)			:= CHOOSE(GregorianDayCount%7, 'MON','TUE','WED','THU','FRI','SAT','SUN');  
 	EXPORT UNSIGNED2	GetDayOfYear(UNSIGNED2 Year,UNSIGNED1 Month,UNSIGNED1 Day)	:= CHOOSE(Month+1,0,0,31,59,90,120,151,181,212,243,273,304,334 ) + Day + IF(IsLeapYear(Year) AND Month > 2, 1, 0);
 	EXPORT BOOLEAN 		IsInvalidDate(UNSIGNED2 Year,UNSIGNED1 Month,UNSIGNED1 Day)	:= Year < 1 OR Month < 1 OR Month > 12 OR Day < 1 OR Day > 31;
-	EXPORT BOOLEAN 		IsInvalidTime(UNSIGNED1 Hour,UNSIGNED1 Minute,UNSIGNED1 Second)	:= Hour < 1 OR Hour > 24 OR Minute < 1 OR Minute > 60 OR Second < 1 OR Second > 60;
+	EXPORT BOOLEAN 		IsInvalidTime(UNSIGNED1 Hour,UNSIGNED1 Minute,UNSIGNED1 Second)	:= Hour < 0 OR Hour > 23 OR Minute < 0 OR Minute > 59 OR Second < 0 OR Second > 59;
 
 	/* Functions that can be used to infer datetime */
 	EXPORT Date 	CreateDFrom(UNSIGNED2 Year,UNSIGNED1 Month,UNSIGNED1 Day) := FUNCTION
