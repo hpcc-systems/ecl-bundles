@@ -2,7 +2,7 @@
 EXPORT Calendar := MODULE
 	IMPORT STD;
 
-	EXPORT Bundle := MODULE //(Std.BundleBase)
+	EXPORT Bundle := MODULE(Std.BundleBase)
 		EXPORT Name 			:= 'Calendar';
 		EXPORT Description 		:= 'Basic Date functions implementation';
 		EXPORT Authors 			:= ['Omnibuzz'];
