@@ -98,15 +98,16 @@ EXPORT FileOp := MODULE
     DefragmentedFileName_Temp   := FileName + Edits + 'Part_Temp';
     DefragmentedFileName_New    := GetFileNameForCurrentVersion(FileName);
     
-    Act                 := IF(IsDefragmentNecessary,SEQUENTIAL(LatestFileName,
-															   Std.File.ClearSuperFile(FileName),
-															   CopyFile(FileName + PrevVersion,DefragmentedFileName_Temp,FALSE),
-															   Std.File.ClearSuperFile(FileName + PrevVersion,TRUE),
-															   STD.File.RenameLogicalFile(LatestFileName, LatestFileName_New),
-															   STD.File.RenameLogicalFile(DefragmentedFileName_Temp, DefragmentedFileName_New),
-															   STD.File.AddSuperFile(FileName,DefragmentedFileName_New),
-															   STD.File.AddSuperFile(FileName,LatestFileName_New),
-															   STD.File.AddSuperFile(FileName + PrevVersion,DefragmentedFileName_New)));
+    Act                 := IF(IsDefragmentNecessary,
+								SEQUENTIAL(LatestFileName,
+										   Std.File.ClearSuperFile(FileName),
+										   CopyFile(FileName + PrevVersion,DefragmentedFileName_Temp,FALSE),
+										   Std.File.ClearSuperFile(FileName + PrevVersion,TRUE),
+										   STD.File.RenameLogicalFile(LatestFileName, LatestFileName_New),
+										   STD.File.RenameLogicalFile(DefragmentedFileName_Temp, DefragmentedFileName_New),
+										   STD.File.AddSuperFile(FileName,DefragmentedFileName_New),
+										   STD.File.AddSuperFile(FileName,LatestFileName_New),
+										   STD.File.AddSuperFile(FileName + PrevVersion,DefragmentedFileName_New)));
                                                                        
     RETURN WHEN(TRUE,Act);                                                                  
     
