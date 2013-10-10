@@ -126,4 +126,8 @@ EXPORT FileOp := MODULE
 																							FAIL('No previous versions available for the file '+ FileName + '. Please delete the file if not required'));
 			RETURN WHEN(TRUE,Act);			
 	END;
+	
+	EXPORT UNSIGNED1 GetFileFragments(STRING FileName) := FUNCTION
+		RETURN IF(Std.File.FileExists(FileName),STD.File.GetSuperFileSubCount(FileName),0);
+	END;
 END;
