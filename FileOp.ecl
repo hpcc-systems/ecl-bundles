@@ -99,15 +99,15 @@ EXPORT FileOp := MODULE
     DefragmentedFileName_New    := GetFileNameForCurrentVersion(FileName);
     
     Act                 := IF(IsDefragmentNecessary,
-								SEQUENTIAL(LatestFileName,
-										   Std.File.ClearSuperFile(FileName),
-										   CopyFile(FileName + PrevVersion,DefragmentedFileName_Temp,FALSE),
-										   Std.File.ClearSuperFile(FileName + PrevVersion,TRUE),
-										   STD.File.RenameLogicalFile(LatestFileName, LatestFileName_New),
-										   STD.File.RenameLogicalFile(DefragmentedFileName_Temp, DefragmentedFileName_New),
-										   STD.File.AddSuperFile(FileName,DefragmentedFileName_New),
-										   STD.File.AddSuperFile(FileName,LatestFileName_New),
-										   STD.File.AddSuperFile(FileName + PrevVersion,DefragmentedFileName_New)));
+				SEQUENTIAL(LatestFileName,
+					   Std.File.ClearSuperFile(FileName),
+					   CopyFile(FileName + PrevVersion,DefragmentedFileName_Temp,FALSE),
+					   Std.File.ClearSuperFile(FileName + PrevVersion,TRUE),
+					   STD.File.RenameLogicalFile(LatestFileName, LatestFileName_New),
+					   STD.File.RenameLogicalFile(DefragmentedFileName_Temp, DefragmentedFileName_New),
+					   STD.File.AddSuperFile(FileName,DefragmentedFileName_New),
+					   STD.File.AddSuperFile(FileName,LatestFileName_New),
+					   STD.File.AddSuperFile(FileName + PrevVersion,DefragmentedFileName_New)));
                                                                        
     RETURN WHEN(TRUE,Act);                                                                  
     
@@ -119,12 +119,12 @@ EXPORT FileOp := MODULE
       IsOverWrittenFile          := STD.File.FileExists(GetFileNameForPrevVersion(FileName)) AND UndoCountPossible = 1 : INDEPENDENT;
       
       Act               := IF(CanUndo,
-							  IF(IsOverwrittenFile, //Tough luck you got just one undo
-								 SEQUENTIAL(Std.File.ClearSuperFile(FileName,TRUE),
-											Std.File.ClearSuperFile(FileName + PrevVersion),
-											STD.File.RenameLogicalFile(GetFileNameForPrevVersion(FileName),GetFileNameForCurrentVersion(FileName))),
-								 SEQUENTIAL(PopLastAppend(FileName))),
-							  FAIL('No previous versions available for the file '+ FileName + '. Please delete the file if not required'));
+				  IF(IsOverwrittenFile, //Tough luck you got just one undo
+					 SEQUENTIAL(Std.File.ClearSuperFile(FileName,TRUE),
+								Std.File.ClearSuperFile(FileName + PrevVersion),
+								STD.File.RenameLogicalFile(GetFileNameForPrevVersion(FileName),GetFileNameForCurrentVersion(FileName))),
+					 SEQUENTIAL(PopLastAppend(FileName))),
+				  FAIL('No previous versions available for the file '+ FileName + '. Please delete the file if not required'));
       RETURN WHEN(TRUE,Act);      
   END;
   
