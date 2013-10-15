@@ -29,15 +29,15 @@ EXPORT FileOp := MODULE
     // Super file to track all the snapshots created for the file
     EXPORT STRING SnapshotTrackSF := Snapshot_Prefix + 'Track';
 
-    SHARED UNSIGNED1 GetFileFragments(STRING SuperFile) := FUNCTION
+    SHARED INTEGER4 GetFileFragments(STRING SuperFile) := FUNCTION
       RETURN IF(Std.File.FileExists(SuperFile),STD.File.GetSuperFileSubCount(SuperFile),0);
     END;
     
-    EXPORT UNSIGNED2 CurrentSF_FragmentCount := GetFileFragments(CurrentSF);
+    EXPORT INTEGER4 CurrentSF_FragmentCount := GetFileFragments(CurrentSF);
     
-    EXPORT UNSIGNED2 PreviousSF_FragmentCount := GetFileFragments(PreviousSF);
+    EXPORT INTEGER4 PreviousSF_FragmentCount := GetFileFragments(PreviousSF);
     
-    EXPORT UNSIGNED2 SnapshotsCount := GetFileFragments(SnapshotTrackSF);
+    EXPORT INTEGER4 SnapshotsCount := GetFileFragments(SnapshotTrackSF);
     
     // Checks if the file is safe for defragment or undo or over write. We do not allow that when there are snapshots created
     EXPORT BOOLEAN IsFileSafe := FUNCTION
@@ -205,7 +205,7 @@ EXPORT FileOp := MODULE
     RETURN WHEN(SnapshotName,NOTHOR(Act));
   END;
 
-  EXPORT UNSIGNED2 GetFileFragments(STRING FileName) := Get(FileName).CurrentSF_FragmentCount;
+  EXPORT INTEGER4 GetFileFragments(STRING FileName) := Get(FileName).CurrentSF_FragmentCount;
   
   EXPORT BOOLEAN IsFileSafe(STRING FileName) := Get(FileName).IsFileSafe;
   
