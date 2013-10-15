@@ -33,11 +33,11 @@ EXPORT FileOp := MODULE
       RETURN IF(Std.File.FileExists(SuperFile),STD.File.GetSuperFileSubCount(SuperFile),0);
     END;
     
-    EXPORT UNSIGNED1 CurrentSF_FragmentCount := GetFileFragments(CurrentSF);
+    EXPORT UNSIGNED2 CurrentSF_FragmentCount := GetFileFragments(CurrentSF);
     
-    EXPORT UNSIGNED1 PreviousSF_FragmentCount := GetFileFragments(PreviousSF);
+    EXPORT UNSIGNED2 PreviousSF_FragmentCount := GetFileFragments(PreviousSF);
     
-    EXPORT UNSIGNED1 SnapshotsCount := GetFileFragments(SnapshotTrackSF);
+    EXPORT UNSIGNED2 SnapshotsCount := GetFileFragments(SnapshotTrackSF);
     
     // Checks if the file is safe for defragment or undo or over write. We do not allow that when there are snapshots created
     EXPORT BOOLEAN IsFileSafe := FUNCTION
@@ -205,7 +205,7 @@ EXPORT FileOp := MODULE
     RETURN WHEN(SnapshotName,NOTHOR(Act));
   END;
 
-  EXPORT UNSIGNED1 GetFileFragments(STRING FileName) := Get(FileName).CurrentSF_FragmentCount;
+  EXPORT UNSIGNED2 GetFileFragments(STRING FileName) := Get(FileName).CurrentSF_FragmentCount;
   
   EXPORT BOOLEAN IsFileSafe(STRING FileName) := Get(FileName).IsFileSafe;
   
