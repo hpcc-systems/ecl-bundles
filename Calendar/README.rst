@@ -7,6 +7,7 @@ All Two digit year representation can and will be assumed to fall between 1950-2
 The following are the functionalities that are provided:
 
 Three new types:
+
 1. Date
 
 2. Time
