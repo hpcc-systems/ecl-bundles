@@ -8,7 +8,9 @@ The following are the functionalities that are provided:
 
 Three new types:
 1. Date
+
 2. Time
+
 3. DateTime
 
 Functions to get the current date and time
