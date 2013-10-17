@@ -45,7 +45,6 @@ DateTime Format Functions
 2. FormatD(Date dt, STRING Format = 'yyyy-mm-dd') - Takes a date type and the format and converts it to the specified format.
 3. FormatT(Time t, STRING Format = 'hh:mi:ss') - Takes a time type and the format and converts it to the specified format.
 
-
 -----------------------------------------------------------------------------------------------------------------------
 
 Miscellaneous Functions:
