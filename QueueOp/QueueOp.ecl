@@ -2,7 +2,7 @@ EXPORT QueueOp := MODULE
   IMPORT STD;
   
   EXPORT Bundle := MODULE(Std.BundleBase)
-    EXPORT Name          := 'Queue';
+    EXPORT Name          := 'QueueOp';
     EXPORT Description   := 'Queue Implementation - Multiple Writers single reader';
     EXPORT Authors       := ['Omnibuzz'];
     EXPORT License       := 'http://www.apache.org/licenses/LICENSE-2.0';
