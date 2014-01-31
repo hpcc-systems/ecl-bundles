@@ -13,5 +13,14 @@ EXPORT tests := MODULE
         EXPORT joinUnordered := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, UNORDERED);
         EXPORT joinParallel := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HINT(parallel_match));
         EXPORT joinLookup := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, MANY LOOKUP);
+        EXPORT joinHash := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HASH);
+        EXPORT joinSmart := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, SMART);
+
+        EXPORT joinLocalNormal := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, LOCAL);
+        EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, UNORDERED, LOCAL);
+        EXPORT joinLocalParallel := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HINT(parallel_match), LOCAL);
+        EXPORT joinLocalLookup := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, MANY LOOKUP, LOCAL);
+        EXPORT joinLocalHash := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HASH, LOCAL);
+        EXPORT joinLocalSmart := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, SMART, LOCAL);
     END;
 END;

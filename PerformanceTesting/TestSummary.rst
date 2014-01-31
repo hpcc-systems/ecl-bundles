@@ -6,7 +6,10 @@ This file contains a list of all the tests within the test suite, and what parti
 | 01.     processing/memory speed
 | 01b-e.  disk speed
 | 02-03.  SORT
-| 04.     JOIN 
+| 04.     JOIN
+| 05.     Grouped aggregation
+| 06.     Hash dedup
+| 07.     PARSE
 
 01 Very basic row operations
 ++++++++++++++++++++++++++++
@@ -101,12 +104,19 @@ These tests create lots of records, and test how different sources work
 
 03b - Distribution
 ------------------
-| 03ab - Distribute  created rows
+| 03ba - Distribute created rows
+| 03bb - Distribute all rows to the same node - no effect.
+| 03bc - Distribute all rows to the next node.
+| 03bc - Distribute all rows to the opposite node.
 
 03c - Parallel Distribution
 ---------------------------
 | 03ca - Distribute 4 datasets in parallel (same total records)
 | 03cb - Distribute 16 datasets in parallel (same total records)
+
+03d - Merge Distribution
+---------------------------
+| 03da - Local sort followed by a merge distribute
 
 04 Joins
 ++++++++
@@ -114,6 +124,8 @@ These tests create lots of records, and test how different sources work
 | 04aa - Simple join between two datasets, 1 match per row.
 | 04ab - Simple join between two datasets, 1 match per row. unsorted output
 | 04ac - Simple join between two datasets, 1 match per row. parallel join
+| 04ae - Simple hash join between two datasets, 1 match per row.
+| 04af - Simple smart join between two datasets, 1 match per row.
 | 04ba - Simple join between two datasets, 4 matches per row.
 | 04bb - Simple join between two datasets, 4 matches per row. unsorted output
 | 04bc - Simple join between two datasets, 4 matches per row. parallel join
@@ -125,11 +137,35 @@ These tests create lots of records, and test how different sources work
 | 04db - Simple join between two datasets, 4K matches per row. unsorted output
 | 04dc - Simple join between two datasets, 4K matches per row. parallel join
 | 04dd - Simple join between two datasets, 4K matches per row. lookup join
+| 04ea - Simple local join between two datasets, 1 match per row.
+| 04eb - Simple local join between two datasets, 1 match per row. unsorted output
+| 04ec - Simple local join between two datasets, 1 match per row. parallel join
+| 04ee - Simple local hash join between two datasets, 1 match per row.
+| 04ef - Simple local smart join between two datasets, 1 match per row.
 
 05 Grouped aggregation
 ++++++++++++++++++++++
 
 | 05aa - Summarise into 64 groups, sort->group->aggregate
-| 05ab - Summarise into 64 groups, hash aggregate
-| 05ba - Summarise into 1M groups, sort->group->aggregate
-| 05ba - Summarise into 1M groups, hash aggregate
+| 05ab - Summarise into 1M groups, sort->group->aggregate
+| 05ac - Summarise into groups of 1 item, sort->group->aggregate
+| 05ba - Summarise into 64 groups, hash aggregate
+| 05bb - Summarise into 1M groups, hash aggregate
+| 05bc - Summarise into groups of 1 item, hash aggregate
+| 05ca - Summarise into 64 groups, distribute->sort->group->aggregate
+| 05cb - Summarise into 1M groups, distribute->sort->group->aggregate
+| 05cc - Summarise into groups of 1 item, distribute->sort->group->aggregate
+
+06 Hash dedup
++++++++++++++
+
+| 06aa - Many Dedup into 64 groups, local sort->dedup->merge distribute->dedup
+| 06ab - Many Dedup into 1M groups, local sort->dedup->merge distribute->dedup
+| 06ac - Many Dedup, but no duplicates removed, local sort->dedup->merge distribute->dedup
+| 06ba - Dedup into 64 groups, hash dedup
+| 06bb - Dedup into 1M groups, hash dedup
+| 06bc - Dedup no duplicates removed, hash dedup
+| 06ca - Dedup into 64 groups, distribute->sort->dedup
+| 06cb - Dedup into 1M groups, distribute->sort->dedup
+| 06cc - Dedup but no duplicates removed, distribute->sort->dedup
+
