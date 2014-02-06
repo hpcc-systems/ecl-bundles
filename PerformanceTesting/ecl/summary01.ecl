@@ -122,7 +122,7 @@ yValues := ROW(TRANSFORM({ STRING y }, SELF.y := '')) & uniqueJobs;
 
 crossProduct := SORT(JOIN(xValues, yValues, true, ALL), y, x);
 
-xyValueRec := { STRING8 x; STRING y; UNICODE text };
+xyValueRec := { STRING8 x; STRING y; UTF8 text };
 
 createValueTable(dataset(resultRec) ds, real scale, unsigned numPlaces) := FUNCTION 
     xyValueRec extractResult(crossProduct l, resultRec r) := TRANSFORM
@@ -159,17 +159,45 @@ createHtmlTable(DATASET(xyValueRec) values) := FUNCTION
 
     byAll := concatRows2(AddRows);
 
-    RETURN TABLE(byAll, { UNICODE text__html := HTML.Table(text, TRUE); });
+    RETURN TABLE(byAll, { UTF8 text__html := HTML.Table(text, TRUE); });
+END;
+
+createSummaryTable(DATASET(xyValueRec) values) := FUNCTION
+
+    valueRec := { UTF8 value; };
+    resultRec := { UTF8 label; DATASET(valueRec) values; };
+    
+    concatRows(GROUPED DATASET(xyValueRec) Values) := FUNCTION
+        resultRec rollupColumns(DATASET(xyValueRec) columns) := TRANSFORM
+            SELF.label := columns[1].text;
+            SELF.values := PROJECT(columns[2..], TRANSFORM(valueRec, SELF.value := LEFT.text));
+        END;
+    
+        RETURN ROLLUP(values, GROUP, rollupColumns(ROWS(LEFT)));
+    END;
+
+    RETURN concatRows(GROUP(values, y));
 END;
 
 valuesProcess := createValueTable(interesting(statName = 'Process'), 0.000000001, 3);
 
 valuesMemory := createValueTable(interesting(statName = 'roxiehwm'), 0.000001, 3);
 
+boolean outputHtml := TRUE;
+
+IF (outputHtml,
+    [
+    output(createHtmlTable(valuesProcess),NAMED('Time_Trends'));
+    output(createHtmlTable(valuesMemory),NAMED('Memory_Trends'))
+    ]
+,
+    [
+    output(createSummaryTable(valuesProcess),NAMED('Time_Trends'));
+    output(createSummaryTable(valuesMemory),NAMED('Memory_Trends'))
+    ]
+);
 
 //output(interesting,NAMED('Interesting'));
-output(createHtmlTable(valuesProcess),NAMED('Time_Trends'));
-output(createHtmlTable(valuesMemory),NAMED('Memory_Trends'));
 //output(uniqueInstances,,NAMED('Instances'));
 //output(uniqueJobs, NAMED('Jobs'));
 //output(dedup(expandedStatistics, name, ALL), { name }, NAMED('Available_Statistics'));
