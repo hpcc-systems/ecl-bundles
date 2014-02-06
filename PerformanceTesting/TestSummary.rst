@@ -14,6 +14,7 @@ This file contains a list of all the tests within the test suite, and what parti
 | 07.     Keyed join
 | 08.     Index read inside a child query
 | 09.     Global index read
+| 10.     Simple child queries
 
 ToDo:
 * PARSE
@@ -249,18 +250,28 @@ TBD:01h - Limits on index reads.
 08 Index read in child
 ++++++++++++++++++++++
 
-08aa - child index read - 1 match - seeks in order
-08ab - child index read - 1 match - seeks out of order
-08ba - child index read, prefetch project - 1 match - seeks in order
-08bb - child index read, prefetch project - 1 match - seeks out of order
-08ca - child stepped index read - 1 match - seeks in order
-08cb - child stepped index read - 1 match - seeks out of order
-08cc - child stepped index read - 1 match - seeks out of order, wild first component
-08cd - child stepped index read - multiple matches - seeks out of order
-08da - child stepped index read - multiple matches - seeks in order
+| 08aa - child index read - 1 match - seeks in order
+| 08ab - child index read - 1 match - seeks out of order
+| 08ba - child index read, prefetch project - 1 match - seeks in order
+| 08bb - child index read, prefetch project - 1 match - seeks out of order
+| 08ca - child stepped index read - 1 match - seeks in order
+| 08cb - child stepped index read - 1 match - seeks out of order
+| 08cc - child stepped index read - 1 match - seeks out of order, wild first component
+| 08cd - child stepped index read - multiple matches - seeks out of order
+| 08da - child stepped index read - multiple matches - seeks in order
 
 09 Global Index read
 ++++++++++++++++++++
 
-09aa - index read 132000 entries from 2 blocks
-09ab - stepped index read 132000 entries from 2 blocks
+| 09aa - index read 132000 entries from 2 blocks
+| 09ab - stepped index read 132000 entries from 2 blocks
+
+10 Child queryies
++++++++++++++++++
+
+| 10aa - count a single inline row - code inline
+| 10ab - count a single inline row - generate subquery
+| 10ac - dedup a set of generated child rows
+| 10ad - sort a set of generated child rows
+| 10ae - project a global inline dataset
+| 10af - project and lookup in a global dictionary
