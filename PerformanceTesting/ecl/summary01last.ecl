@@ -94,7 +94,7 @@ expandStatistics(DATASET(gatheredRecord) wus) := FUNCTION
 END;
 
 allWorkunits := NOTHOR(generateSummary(''));
-mostRecent := DEDUP(SORT(allWorkUnits, job, -wuid), job) : global;
+mostRecent := DEDUP(SORT(allWorkUnits, job, -wuid), job) : global(few);
 allStatistics := NOTHOR(gatherStatistics(mostRecent));
 expandedStatistics := expandStatistics(allStatistics);
 
