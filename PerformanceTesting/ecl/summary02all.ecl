@@ -1,7 +1,11 @@
 import std.System.Workunit AS Wu;
 import Std.System.Job;
+import Std.Str;
+
+//nokey - the results from this query are output in the log output
 
 wuRecord := RECORD
+    STRING instance;
     STRING wuid;
     STRING job;
 END;
@@ -18,7 +22,7 @@ resultRec := RECORD
     unsigned maxValue;
     unsigned aveValue;
     unsigned medValue;
-    STRING8 date;
+    STRING instance;
     STRING job;
     STRING statname;
 END;
@@ -29,7 +33,13 @@ generateSummary(string searchCluster) := FUNCTION
 
    regressSuiteWu := completedWorkunits(REGEXFIND('^[0-9]+[a-z][a-z]_', job));
 
-   RETURN PROJECT(regressSuiteWu, TRANSFORM(wuRecord, SELF.wuid := TRIM(LEFT.wuid); SELF.job := TRIM(LEFT.job)));
+   wuRecord extractWuInfo(Wu.WorkunitRecord l) := TRANSFORM
+        SELF.wuid := TRIM(l.wuid);
+        SELF.job := TRIM(l.job[1..Str.Find(l.job, '-')-1]);
+        SELF.instance := l.wuid[2..9] + ':' + l.cluster;
+   END;
+
+   RETURN PROJECT(regressSuiteWu, extractWuInfo(LEFT));
 END;
 
 gatherStatistics(DATASET(wuRecord) wus) := FUNCTION
@@ -77,7 +87,7 @@ expandStatistics(DATASET(gatheredRecord) wus) := FUNCTION
     RETURN NORMALIZE(wus, LEFT.statistics, t(LEFT, RIGHT));
 END;
 
-allWorkunits := generateSummary(job.target());
+allWorkunits := generateSummary('');
 allStatistics := NOTHOR(gatherStatistics(allWorkunits));
 expandedStatistics := expandStatistics(allStatistics);
 
@@ -85,13 +95,12 @@ interestingStats := ['Process', 'roxiehwm'];
 
 filteredStatistics := expandedStatistics(name in ALL);
 
-groupedByJobDate := GROUP(filteredStatistics, job, wuid[1..9], name, ALL);
+groupedByJobInstance := GROUP(filteredStatistics, job, instance, name, ALL);
 
-sortByDuration := SORT(groupedByJobDate, value);
+sortByDuration := SORT(groupedByJobInstance, value);
 
 resultRec combineResults(StatisticRecord l, DATASET(StatisticRecord) statistics) := TRANSFORM
     SELF := l;
-    SELF.date := l.wuid[2..9];
     SELF.statName := l.name;
     SELF.minValue := MIN(statistics, value);
     SELF.maxValue := MAX(statistics, value);
@@ -104,28 +113,26 @@ summarised := ROLLUP(sortByDuration, GROUP, combineResults(LEFT, ROWS(LEFT)));
 
 interesting := summarised(maxValue != 0);
 
-output(interesting,NAMED('Interesting'));
-
-uniqueDates := SORT(TABLE(dedup(interesting, date, HASH), { STRING8 x := date }), x);
+uniqueInstances := SORT(TABLE(dedup(interesting, instance, HASH), { STRING x := instance }), x);
 uniqueJobs := SORT(TABLE(dedup(interesting, job, HASH), { STRING y := job }), y);
 uniqueStats := SORT(TABLE(dedup(interesting, statName, HASH), { STRING stat := statName }), stat);
 
-xValues := ROW(TRANSFORM({ STRING8 x }, SELF.x := '')) & uniqueDates;
+xValues := ROW(TRANSFORM({ STRING x }, SELF.x := '')) & uniqueInstances;
 yValues := ROW(TRANSFORM({ STRING y }, SELF.y := '')) & uniqueJobs;
 
 crossProduct := SORT(JOIN(xValues, yValues, true, ALL), y, x);
 
-xyValueRec := { STRING8 x; STRING y; UNICODE text };
+xyValueRec := { STRING8 x; STRING y; UTF8 text };
 
 createValueTable(dataset(resultRec) ds, real scale, unsigned numPlaces) := FUNCTION 
     xyValueRec extractResult(crossProduct l, resultRec r) := TRANSFORM
         SELF := l;
         SELF.text := MAP(l.x = '' => l.y,
                           l.y = '' => l.x,
-                          IF(r.date = '', '', REALFORMAT((r.aveValue * scale), numPlaces+7, numPlaces)));
+                          IF(r.instance = '', '', REALFORMAT((r.aveValue * scale), numPlaces+7, numPlaces)));
     END;
     
-    RETURN JOIN(crossProduct, ds, LEFT.x = RIGHT.date AND LEFT.y = RIGHT.job, extractResult(LEFT, RIGHT), LEFT OUTER, MANY LOOKUP);
+    RETURN JOIN(crossProduct, ds, LEFT.x = RIGHT.instance AND LEFT.y = RIGHT.job, extractResult(LEFT, RIGHT), LEFT OUTER, MANY LOOKUP);
 END;
 
 
@@ -152,15 +159,45 @@ createHtmlTable(DATASET(xyValueRec) values) := FUNCTION
 
     byAll := concatRows2(AddRows);
 
-    RETURN TABLE(byAll, { UNICODE text__html := HTML.Table(text, TRUE); });
+    RETURN TABLE(byAll, { UTF8 text__html := HTML.Table(text, TRUE); });
+END;
+
+createSummaryTable(DATASET(xyValueRec) values) := FUNCTION
+
+    valueRec := { UTF8 value; };
+    resultRec := { UTF8 label; DATASET(valueRec) values; };
+    
+    concatRows(GROUPED DATASET(xyValueRec) Values) := FUNCTION
+        resultRec rollupColumns(DATASET(xyValueRec) columns) := TRANSFORM
+            SELF.label := columns[1].text;
+            SELF.values := PROJECT(columns[2..], TRANSFORM(valueRec, SELF.value := LEFT.text));
+        END;
+    
+        RETURN ROLLUP(values, GROUP, rollupColumns(ROWS(LEFT)));
+    END;
+
+    RETURN concatRows(GROUP(values, y));
 END;
 
 valuesProcess := createValueTable(interesting(statName = 'Process'), 0.000000001, 3);
-output(createHtmlTable(valuesProcess),NAMED('Time_Trends'));
 
 valuesMemory := createValueTable(interesting(statName = 'roxiehwm'), 0.000001, 3);
-output(createHtmlTable(valuesMemory),NAMED('Memory_Trends'));
 
-output(uniqueDates,,NAMED('Dates'));
-output(uniqueJobs, NAMED('Jobs'));
-output(dedup(expandedStatistics, name, ALL), { name }, NAMED('Available_Statistics'));
+boolean outputHtml := TRUE;
+
+IF (outputHtml,
+    [
+    output(createHtmlTable(valuesProcess),NAMED('Time_Trends'));
+    output(createHtmlTable(valuesMemory),NAMED('Memory_Trends'))
+    ]
+,
+    [
+    output(createSummaryTable(valuesProcess),NAMED('Time_Trends'));
+    output(createSummaryTable(valuesMemory),NAMED('Memory_Trends'))
+    ]
+);
+
+//output(interesting,NAMED('Interesting'));
+//output(uniqueInstances,,NAMED('Instances'));
+//output(uniqueJobs, NAMED('Jobs'));
+//output(dedup(expandedStatistics, name, ALL), { name }, NAMED('Available_Statistics'));

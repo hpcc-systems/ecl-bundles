@@ -1,9 +1,12 @@
 import perform.config, perform.format;
 
 export files := MODULE
-    export prefix := '~perform::' + __PLATFORM__ + '::';
+    export platform := __PLATFORM__;
+    export prefix := '~perform::' + platform + '::';
+    export thorprefix := '~perform::thorlcr::';
     export simpleName := prefix + 'simple';
     export paddedName := prefix + 'padded';
+    export indexName := prefix + 'index';
 
     export generateN(unsigned delta = 0, unsigned num) := DATASET(num, format.createSimple(COUNTER + delta), DISTRIBUTED);
 
@@ -25,4 +28,36 @@ export files := MODULE
 
     export diskSplit(unsigned part) := DATASET(paddedName+suffix(false)+'_' + (string)part, format.simpleRec, FLAT);
 
+    export manyIndex123 := INDEX({ 
+        unsigned1 id1a;
+        unsigned1 id1b;
+        unsigned1 id1c;
+        unsigned1 id1d;
+        unsigned1 id1e;
+        unsigned1 id1f;
+        unsigned1 id1g;
+        unsigned1 id1h;
+        unsigned8 id2, unsigned8 id3 }, { unsigned8 id4 }, thorprefix + 'index_id1xid2id3id4');
+    
+    export manyIndex321 := INDEX({ 
+        unsigned1 id3a;
+        unsigned1 id3b;
+        unsigned1 id3c;
+        unsigned1 id3d;
+        unsigned1 id3e;
+        unsigned1 id3f;
+        unsigned1 id3g;
+        unsigned1 id3h;
+        unsigned8 id2, unsigned8 id1 }, { unsigned8 id4 }, thorprefix + 'index_id3xid2id1id4');
+    
+    export singleIndex := INDEX({ 
+        unsigned1 id1a;
+        unsigned1 id1b;
+        unsigned1 id1c;
+        unsigned1 id1d;
+        unsigned1 id1e;
+        unsigned1 id1f;
+        unsigned1 id1g;
+        unsigned1 id1h;
+        unsigned8 id2, unsigned8 id3 }, { unsigned8 id4 }, thorprefix + 'index_id1xid2id3id4_1');
 END;
