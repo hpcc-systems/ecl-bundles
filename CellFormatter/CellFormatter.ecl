@@ -11,6 +11,8 @@
      *
      *   To activate the "HTML" or "JavaScript" modes, the user simply appends 
      *   either "__html" or "__javascript" to the column name.
+     *   To override the default width, simply append a size prior to 
+     *   "__html/__javascript", i.e. "MyField__1024__html".
      *
      * Plain Text Formatting:
      *   When plain text is rendered in the cell it is "HTML Encoded" to ensure that 
