@@ -1,3 +1,5 @@
+//class=summary
+
 import std.System.Workunit AS Wu;
 import Std.System.Job;
 import Std.Str;

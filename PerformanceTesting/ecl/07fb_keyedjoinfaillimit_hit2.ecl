@@ -1,3 +1,6 @@
+//class=index
+//class=keyedjoin
+
 import perform.config;
 import perform.format;
 import perform.files;

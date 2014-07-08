@@ -1,3 +1,7 @@
+//class=child
+//class=memory
+//class=sort
+
 import perform.config;
 import perform.format;
 import perform.files;

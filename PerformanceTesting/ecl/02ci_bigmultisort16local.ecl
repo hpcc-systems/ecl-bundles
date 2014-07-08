@@ -1,3 +1,8 @@
+//class=memory
+//class=parallel
+//class=stress
+//class=sort
+
 import perform.config, perform.format, perform.files;
 #option ('unlimitedResources', true); // generate all the sorts into a single graph
 

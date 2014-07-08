@@ -1,3 +1,6 @@
+//class=disk
+//class=diskread
+
 import perform.config, perform.format, perform.files;
 
 ds := files.csvSimple(false);

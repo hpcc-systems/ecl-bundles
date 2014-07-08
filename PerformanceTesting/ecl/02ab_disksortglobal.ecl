@@ -1,3 +1,6 @@
+//class=disk
+//class=sort
+
 import perform.config, perform.format, perform.files;
 
 ds := files.diskSimple(false);
