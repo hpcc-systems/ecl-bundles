@@ -8,13 +8,13 @@ export files := MODULE
     export paddedName := prefix + 'padded';
     export indexName := prefix + 'index';
 
-    export generateN(unsigned delta = 0, unsigned num) := DATASET(num, format.createSimple(COUNTER + delta), DISTRIBUTED);
+    export generateN(unsigned delta = 0, unsigned num) := NOFOLD(DATASET(num, format.createSimple(COUNTER + delta), DISTRIBUTED));
 
     export generateSimple(unsigned delta = 0) := DATASET(config.simpleRecordCount, format.createSimple(COUNTER + delta), DISTRIBUTED);
 
     export generateSimpleScaled(unsigned delta = 0, unsigned scale) := generateN(delta, config.simpleRecordCount DIV scale);
 
-    export generatePadded() := DATASET(config.simpleRecordCount, format.createPadded(COUNTER), DISTRIBUTED);
+    export generatePadded() := NOFOLD(DATASET(config.simpleRecordCount, format.createPadded(COUNTER), DISTRIBUTED));
 
     EXPORT suffix(boolean compressed) := IF(compressed, '_compressed', '_uncompressed');
 

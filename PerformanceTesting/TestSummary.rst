@@ -47,6 +47,7 @@ And the following operation-specific classes are supported.  (The class is also 
 * sort
 * distribute
 * join
+* smartjoin
 * hashaggregate
 * hashdedup
 * keyedjoin
@@ -303,3 +304,19 @@ TBD:01h - Limits on index reads [class: indexread]
 | 10ad - sort a set of generated child rows
 | 10ae - project a global inline dataset
 | 10af - project and lookup in a global dictionary
+
+11 Smart joins
+++++++++++++++++
+
+| 11aa - simple smart join (non spilling)
+| 11ab - smart join, fall back to local join
+| 11ac - smart join, fall back to local join
+| 11ad - smart join, fall back to full join
+| 11ba - simple smart join (non spilling), left only
+| 11bb - smart join, fall back to local join, left only
+| 11bc - smart join, fall back to local join, left only
+| 11bd - smart join, fall back to full join, left only
+| 11ca - simple smart join (non spilling), parallel
+| 11cb - smart join, fall back to local join, parallel
+| 11cc - smart join, fall back to local join, parallel
+| 11cd - smart join, fall back to full join, parallel

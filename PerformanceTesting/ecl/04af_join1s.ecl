@@ -1,5 +1,6 @@
 //class=memory
 //class=join
+//class=smartjoin
 
 import perform.tests;
 
