@@ -1,3 +1,6 @@
+//class=memory
+//class=hashaggregate
+
 import perform.config, perform.format, perform.files;
 
 ds := files.generateSimple();

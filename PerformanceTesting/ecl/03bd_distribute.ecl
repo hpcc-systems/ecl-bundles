@@ -1,3 +1,6 @@
+//class=memory
+//class=distribute
+
 import perform.config, perform.format, perform.files;
 import Std.System.ThorLib;
 

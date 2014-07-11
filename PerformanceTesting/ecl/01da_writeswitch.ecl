@@ -1,3 +1,7 @@
+//class=disk
+//class=parallel
+//class=diskread
+
 import perform.config, perform.format, perform.files;
 LOADXML('<xml/>');
 

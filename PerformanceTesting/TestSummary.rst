@@ -22,14 +22,42 @@ ToDo:
 * PARALLEL PROJECT
 * PREFETCH PROJECT
 * GROUPED concat
+* index aggregation
 * Child queries - trivial, and more complex.
+
+Each of the tests can belong to one or more classes.  These classes allow subsets of the tests to be selectively
+included or excluded from the test.  The following general classes are supported:
+
+* child - involves a child query
+* disk - reads or writes datafiles from the disk
+* index - performs index operations  
+* memory - purely memory based, not access to disk
+* parallel - contains tests that particularly test multi threading
+* quick - a test that should only take a few seconds
+* stress - designed to push the system to the limit.  Likely to take a long time to complete.
+* summary - generates a summary report
+
+And the following operation-specific classes are supported.  (The class is also indicated below.)
+
+* create
+* diskwrite
+* diskread
+* indexwrite
+* indexread
+* sort
+* distribute
+* join
+* hashaggregate
+* hashdedup
+* keyedjoin
+* indexread
 
 
 01 Very basic row operations
 ++++++++++++++++++++++++++++
 
-01a - Raw record creation
--------------------------
+01a - Raw record creation [class: create]
+-----------------------------------------
 
 These tests create lots of records, and test how different sources work
 
@@ -40,7 +68,7 @@ These tests create lots of records, and test how different sources work
 | 01ae - single input, split the output n-ways (no overlap between outputs)
 | 01ag..al - 2,4,8,12,16,32 way unordered append - tests scaling of the multi threaded concat.
 
-01b - Raw disk write speed
+01b - Raw disk write speed [class: diskwrite]
 --------------------------
 
 | 01ba - write 32b row to a disk file, uncompressed
@@ -50,8 +78,8 @@ These tests create lots of records, and test how different sources work
 | 01be - write csv to a disk file, uncompressed
 | 01bf - write xml to a disk file, uncompressed
 
-01c - Raw disk read speed
--------------------------
+01c - Raw disk read speed [class: diskread]
+-------------------------------------------
 
 | 01ca - read 32b row to a disk file, uncompressed
 | 01cb - read 32b row to a disk file, compressed
@@ -60,14 +88,14 @@ These tests create lots of records, and test how different sources work
 | 01ce - read csv to a disk file, uncompressed
 | 01cf - read xml to a disk file, uncompressed
 
-01d - Parallel disk write speed
--------------------------------
+01d - Parallel disk write speed [class: diskread,parallel]
+----------------------------------------------------------
 
 | 01da - parallel write to disk (rows distributed among outputs)
 | 01db - delete the files generated in parallel
 
-01e - Disk aggregation (like 01c, but with little row creation overhead)
-------------------------------------------------------------------------
+01e - Disk aggregation (like 01c, but with little row creation overhead) [class: diskread]
+------------------------------------------------------------------------------------------
 
 | 01ea - sum 32b row to a disk file, uncompressed
 | 01eb - sum 32b row to a disk file, compressed
@@ -76,23 +104,23 @@ These tests create lots of records, and test how different sources work
 | 01ee - sum csv to a disk file, uncompressed
 | 01ef - sum xml to a disk file, uncompressed
 
-01f - Index creation
---------------------
+01f - Index creation [class: indexwrite]
+----------------------------------------
 
 | 01fa - create an index, records already in order
 | 01fb - create an index, records out of order
 | 01fc - create an index, single node
 
 
-TBD:01g - Raw index reading speed
----------------------------------
+TBD:01g - Raw index reading speed [class: indexread]
+----------------------------------------------------
 
 | 01ga - Read a contiguous block
 | 01gb - Read multiple contiguous block distributed across the nodes
 | 01gc - Stepped read, performing a 256-way merge.
 
-TBD:01h - Limits on index reads.
---------------------------------
+TBD:01h - Limits on index reads [class: indexread]
+--------------------------------------------------
 
 | 01ha - simple limit from single node
 | 01hb - simple limit from single node, records on many
@@ -101,14 +129,14 @@ TBD:01h - Limits on index reads.
 02 Sorting
 ++++++++++
 
-02a - Disk sorting
-------------------
+02a - Disk sorting [class: sort]
+--------------------------------
 
 | 02aa - sort rows from disk locally
 | 02ab - sort rows from disk globally
 
-02b - Sorting created records (no disk hit)
--------------------------------------------
+02b - Sorting created records (no disk hit) [class: sort]
+---------------------------------------------------------
 
 | 02ba - sort rows locally
 | 02bb - sort rows globally
@@ -119,8 +147,8 @@ TBD:01h - Limits on index reads.
 | 02bg - Sort global with duplicates (only 4K unique keys)
 | 02bh - Sort global with duplicates (a skewed distribution)
 
-02c - Multiple sorts in parallel
---------------------------------
+02c - Multiple sorts in parallel [class: sort]
+----------------------------------------------
 | 02ca - 4 Parallel local sorts (same total records)
 | 02cb - 16 Parallel local sorts (same total records)
 | 02cc - 4 Parallel global sorts (same total records)
@@ -135,28 +163,28 @@ TBD:01h - Limits on index reads.
 03 Distribution
 +++++++++++++++
 
-03a - Distribution from disk
-----------------------------
+03a - Distribution from disk [class: distribute]
+------------------------------------------------
 | 03aa - Distribute from disk file
 
-03b - Distribution
-------------------
+03b - Distribution [class: distribute]
+--------------------------------------
 | 03ba - Distribute created rows
 | 03bb - Distribute all rows to the same node - no effect.
 | 03bc - Distribute all rows to the next node.
 | 03bc - Distribute all rows to node self+CLUSTERSIZE/2.
 
-03c - Parallel Distribution
----------------------------
+03c - Parallel Distribution [class: distribute]
+-----------------------------------------------
 | 03ca - Distribute 4 datasets in parallel (same total records)
 | 03cb - Distribute 16 datasets in parallel (same total records)
 
-03d - Merge Distribution
----------------------------
+03d - Merge Distribution [class: distribute]
+--------------------------------------------
 | 03da - Local sort followed by a merge distribute
 
-04 Joins
-++++++++
+04 Joins [class: join]
+++++++++++++++++++++++
 
 | 04aa - Simple join between two datasets, 1 match per row.
 | 04ab - Simple join between two datasets, 1 match per row. unsorted output
@@ -182,8 +210,8 @@ TBD:01h - Limits on index reads.
 | 04ee - Simple local hash join between two datasets, 1 match per row.
 | 04ef - Simple local smart join between two datasets, 1 match per row.
 
-05 Grouped aggregation
-++++++++++++++++++++++
+05 Grouped aggregation [class: hashaggregate]
++++++++++++++++++++++++++++++++++++++++++++++
 
 | 05aa - Summarise into 64 groups, sort->group->aggregate
 | 05ab - Summarise into 1M groups, sort->group->aggregate
@@ -195,8 +223,8 @@ TBD:01h - Limits on index reads.
 | 05cb - Summarise into 1M groups, distribute->sort->group->aggregate
 | 05cc - Summarise into groups of 1 item, distribute->sort->group->aggregate
 
-06 Hash dedup
-+++++++++++++
+06 Hash dedup [class: hashdedup]
+++++++++++++++++++++++++++++++++
 
 | 06aa - Many Dedup into 64 groups, local sort->dedup->merge distribute->dedup
 | 06ab - Many Dedup into 1M groups, local sort->dedup->merge distribute->dedup
@@ -211,44 +239,44 @@ TBD:01h - Limits on index reads.
 07 Keyed join
 +++++++++++++
 
-07a/b - Simple keyed join
--------------------------
+07a/b - Simple keyed join [class: keyedjoin]
+--------------------------------------------
 
 | 07aa - Simple keyed join, records in order
 | 07ba - Simple keyed join, records out of order, smaller number
 | 07bb - Simple keyed join, records out of order, medium number
 | 07bc - Simple keyed join, records out of order, large number
 
-07c - Keyed join with limit (not hit)
--------------------------------------
+07c - Keyed join with limit (not hit) [class: keyedjoin]
+--------------------------------------------------------
 
 | 07ca - keyed join, out of order, match(1),limit(1)
 | 07cb - keyed join, out of order, match(1),limit(256)
 | 07cc - keyed join, in order, match(256),limit(256)
 
-07d - Keyed join with limit,skip (hit)
---------------------------------------
+07d - Keyed join with limit,skip (hit) [class: keyedjoin]
+---------------------------------------------------------
 
 | 07ca - keyed join, out of order, match(>1),limit(1)
 | 07cb - keyed join, out of order, match(>1),limit(1), wild component(0)
 | 07cc - keyed join, in order, match(255/256),limit(255)
 
-07e - Keyed join with limit,skip,count (hit)
---------------------------------------------
+07e - Keyed join with limit,skip,count (hit) [class: keyedjoin]
+---------------------------------------------------------------
 
 | 07ea - keyed join, out of order, match(>1),limit(1)
 | 07eb - keyed join, out of order, match(>1),limit(1), wild component(0)
 | 07ec - keyed join, in order, match(255/256),limit(255)
 
-07f - Keyed join with limit,transform (hit)
--------------------------------------------
+07f - Keyed join with limit,transform (hit) [class: keyedjoin]
+--------------------------------------------------------------
 
 | 07fa - keyed join, out of order, match(>1),limit(1)
 | 07fb - keyed join, out of order, match(>1),limit(1), wild component(0)
 | 07fc - keyed join, in order, match(255/256),limit(255)
 
-08 Index read in child
-++++++++++++++++++++++
+08 Index read in child [class: indexread]
++++++++++++++++++++++++++++++++++++++++++
 
 | 08aa - child index read - 1 match - seeks in order
 | 08ab - child index read - 1 match - seeks out of order
@@ -260,14 +288,14 @@ TBD:01h - Limits on index reads.
 | 08cd - child stepped index read - multiple matches - seeks out of order
 | 08da - child stepped index read - multiple matches - seeks in order
 
-09 Global Index read
-++++++++++++++++++++
+09 Global Index read [class: indexread]
++++++++++++++++++++++++++++++++++++++++
 
 | 09aa - index read 132000 entries from 2 blocks
 | 09ab - stepped index read 132000 entries from 2 blocks
 
-10 Child queryies
-+++++++++++++++++
+10 Child queries
+++++++++++++++++
 
 | 10aa - count a single inline row - code inline
 | 10ab - count a single inline row - generate subquery

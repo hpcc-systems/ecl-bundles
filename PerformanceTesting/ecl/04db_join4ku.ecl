@@ -1,3 +1,7 @@
+//class=memory
+//class=parallel
+//class=join
+
 import $ as perform;
 import perform.tests;
 

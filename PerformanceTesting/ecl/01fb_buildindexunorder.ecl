@@ -1,3 +1,6 @@
+//class=index
+//class=indexwrite
+
 import perform.config;
 import perform.format;
 import perform.files;

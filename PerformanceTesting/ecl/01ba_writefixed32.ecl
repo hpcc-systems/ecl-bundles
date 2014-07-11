@@ -1,3 +1,6 @@
+//class=disk
+//class=diskwrite
+
 import perform.config;
 import perform.format;
 import perform.files;

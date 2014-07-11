@@ -1,3 +1,6 @@
+//class=memory
+//class=join
+
 import perform.tests;
 
 j := tests.join(1);

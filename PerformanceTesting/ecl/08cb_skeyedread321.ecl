@@ -1,3 +1,7 @@
+//class=child
+//class=index
+//class=indexread
+
 import perform.config;
 import perform.format;
 import perform.files;

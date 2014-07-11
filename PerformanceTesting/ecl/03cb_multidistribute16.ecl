@@ -1,3 +1,7 @@
+//class=memory
+//class=parallel
+//class=distribute
+
 import perform.config, perform.format, perform.files;
 #option ('unlimitedResources', true); // generate all the sorts into a single graph
 

@@ -1,3 +1,7 @@
+//class=memory
+//class=stress
+//class=sort
+
 import perform.config, perform.format, perform.files;
 
 numRecords := config.simpleRecordCount * 4;

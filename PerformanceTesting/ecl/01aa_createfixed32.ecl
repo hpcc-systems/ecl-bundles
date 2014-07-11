@@ -1,3 +1,7 @@
+//class=memory
+//class=quick
+//class=create
+
 import perform.config;
 import perform.format;
 import perform.files;
