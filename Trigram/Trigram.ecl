@@ -1,5 +1,23 @@
+﻿// Trigram similarity measures for UNICODE and SBCS strings.
 EXPORT Trigram := MODULE
-  EXPORT REAL8 unicode_compare(UNICODE l_str, UNICODE r_str) := FUNCTION
+  IMPORT Std;
+  EXPORT Bundle := MODULE(Std.BundleBase)
+    EXPORT Name := 'Trigram';
+    EXPORT Description := 'Trigram string similarity for UNICODE and SBCS strings';
+    EXPORT Authors := ['John Holt'];
+    EXPORT License := 'http://www.apache.org/licenses/LICENSE-2.0';
+    EXPORT Copyright := 'Copyright (C) 2014 HPCC Systems';
+    EXPORT DependsOn := [];
+    EXPORT Version := '1.0.0';
+  END;
+  /* Measure string similarity based upon ration of common trigrams to all trigrams
+   * found in the UNICODE argument strings.
+   * @param l_str     the left string
+   * @param r_str     the right string
+   * @return          the ration of the number of trigrams in common to the combined
+   *                  number of trigrams from both strings
+   */
+  EXPORT REAL8 compare_unicode(UNICODE l_str, UNICODE r_str) := FUNCTION
     UNICODE1 begin_text := u'\0002';
     UNICODE1 end_text := u'\0003';
     tgram_rec := RECORD
@@ -22,8 +40,8 @@ EXPORT Trigram := MODULE
       SELF.r_count := IF(pick = 1, 0, 1);
       SELF.common := 0;
     END;
-    l_tgrams := NORMALIZE(ds, LENGTH(LEFT.l_str), make_tg(LEFT, COUNTER, 1);
-    r_tgrams := NORMALIZE(ds, LENGTH(LEFT.r_str), make_tg(LEFT, COUNTER, 2);
+    l_tgrams := NORMALIZE(ds, LENGTH(LEFT.l_str), make_tg(LEFT, COUNTER, 1));
+    r_tgrams := NORMALIZE(ds, LENGTH(LEFT.r_str), make_tg(LEFT, COUNTER, 2));
     indv_rec := SORT(l_tgrams+r_tgrams, t_gram);
     // roll for easy counting for easy counting
     tgram_rec roll_tgram(tgram_rec accum, tgram_rec next) := TRANSFORM
@@ -33,7 +51,7 @@ EXPORT Trigram := MODULE
       SELF.common  := MIN(SELF.l_count, SELF.r_count);
     END;
     roll_rec := ROLLUP(indv_rec, roll_tgram(LEFT,RIGHT), t_gram);
-    common_card := SUM(roll_rec, common);
+    common_card := 2 * SUM(roll_rec, common);
     tot_card := SUM(roll_rec, l_count) + SUM(roll_rec, r_count);
     REAL8 ret_val := MAP(LENGTH(l_str)=0 AND LENGTH(r_str)=0  => 1.0,
                          LENGTH(l_str)=0                      => 0.0,
@@ -43,7 +61,19 @@ EXPORT Trigram := MODULE
                          common_card/tot_card);
     RETURN ret_val;
   END;
-  // Test cases
+  /* Measure string similarity based upon ration of common trigrams to all trigrams
+   * found in the single byte character set argument strings.
+   * @param l_str     the left string
+   * @param r_str     the right string
+   * @return          the ration of the number of trigrams in common to the combined
+   *                  number of trigrams from both strings
+   */
+  EXPORT REAL8   compare_string(STRING l_str, STRING r_str) := FUNCTION
+    RETURN compare_unicode((UNICODE) l_str, (UNICODE) r_str);
+  END;
+  //
+  //Test cases for the compare.
+  //
   Test_Rec := RECORD
     UNICODE str1;
     UNICODE str2;
@@ -54,7 +84,7 @@ EXPORT Trigram := MODULE
     REAL8 score;
   END;
   Test_Result test(Test_Rec re) := TRANSFORM
-    SELF.score := unicode_compare(re.str1, re.str2);
+    SELF.score := compare_unicode(re.str1, re.str2);
     SELF := re;
   END;
   test_data := DATASET([{u'a', u''}, {u'a', u'a'}, {u'a', u'b'},
