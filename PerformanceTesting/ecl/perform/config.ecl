@@ -8,5 +8,6 @@ export config := MODULE
     export indexScale := 1;
     export SplitWidth := 16;  // Number of ways the splitter/appending tests divide
     export recordAllocSize := 64; // Actual memory used by one of the records
-    export simpleRecordCount := (memoryPerSlave * numSlaves) / recordAllocSize / 2;  // Aim for enough records to ensure memory is not quite filled.
+    export recordPerNode := memoryPerSlave DIV (recordAllocSize * 2);  // Aim for enough records to ensure memory is not quite filled.
+    export simpleRecordCount := (recordPerNode * numSlaves);  // Aim for enough records to ensure memory is not quite filled.
 end;
