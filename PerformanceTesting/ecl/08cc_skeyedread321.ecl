@@ -1,6 +1,7 @@
 //class=child
 //class=index
 //class=indexread
+//class=stress
 
 import perform.config;
 import perform.format;

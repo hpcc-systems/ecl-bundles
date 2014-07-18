@@ -25,7 +25,7 @@ EXPORT tests := MODULE
     END;
 
     EXPORT smartjoin(real scaleNode, real scaleTotal, unsigned expectedMatches) := MODULE
-        SHARED numInputRows := (unsigned8)(config.recordPerNode * scaleNode + config.simpleRecordCount * scaleTotal);
+        EXPORT numInputRows := (unsigned8)(config.recordPerNode * scaleNode + config.simpleRecordCount * scaleTotal);
         SHARED dsLeft := files.generateN(0, numInputRows);
         SHARED dsRight := files.generateN(NOFOLD(0), numInputRows);
         EXPORT numExpected := (numInputRows DIV expectedMatches) * expectedMatches * expectedMatches + (numInputRows % expectedMatches) * (numInputRows % expectedMatches);
