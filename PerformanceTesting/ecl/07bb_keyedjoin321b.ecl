@@ -1,5 +1,6 @@
 //class=index
 //class=keyedjoin
+//class=stress
 
 import perform.config;
 import perform.format;
