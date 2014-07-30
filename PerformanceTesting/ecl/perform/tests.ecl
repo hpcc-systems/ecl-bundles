@@ -9,19 +9,24 @@ EXPORT tests := MODULE
         SHARED numInputRows := config.simpleRecordCount DIV expectedMatches;
         EXPORT numExpected := (numInputRows DIV expectedMatches) * expectedMatches * expectedMatches + (numInputRows % expectedMatches) * (numInputRows % expectedMatches);
         
-        EXPORT joinNormal := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches);
-        EXPORT joinUnordered := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, UNORDERED);
-        EXPORT joinParallel := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HINT(parallel_match));
-        EXPORT joinLookup := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, MANY LOOKUP);
-        EXPORT joinHash := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HASH);
-        EXPORT joinSmart := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, SMART);
+        //Add a hash on each side to ensure the input dataset isn't sorted by the id, hopefully won't introduce false positives!
+        SHARED test(dsLeft l, dsRight r) := HASH64((l.id1-1) DIV expectedMatches) = HASH64((r.id1-1) DIV expectedMatches);
+        SHARED testOrdered(dsLeft l, dsRight r) := (l.id1-1) DIV expectedMatches = (r.id1-1) DIV expectedMatches;
+        
+        EXPORT joinNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT));
+        EXPORT joinOrderedInputsNormal := JOIN(dsLeft, dsRight, testOrdered(LEFT, RIGHT)); // inputs happen to be ordered
+        EXPORT joinUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), UNORDERED);
+        EXPORT joinParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HINT(parallel_match));
+        EXPORT joinLookup := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), MANY LOOKUP);
+        EXPORT joinHash := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HASH);
+        EXPORT joinSmart := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART);
 
-        EXPORT joinLocalNormal := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, LOCAL);
-        EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, UNORDERED, LOCAL);
-        EXPORT joinLocalParallel := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HINT(parallel_match), LOCAL);
-        EXPORT joinLocalLookup := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, MANY LOOKUP, LOCAL);
-        EXPORT joinLocalHash := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, HASH, LOCAL);
-        EXPORT joinLocalSmart := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, SMART, LOCAL);
+        EXPORT joinLocalNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), LOCAL);
+        EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), UNORDERED, LOCAL);
+        EXPORT joinLocalParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HINT(parallel_match), LOCAL);
+        EXPORT joinLocalLookup := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), MANY LOOKUP, LOCAL);
+        EXPORT joinLocalHash := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HASH, LOCAL);
+        EXPORT joinLocalSmart := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART, LOCAL);
     END;
 
     EXPORT smartjoin(real scaleNode, real scaleTotal, unsigned expectedMatches) := MODULE
@@ -30,8 +35,15 @@ EXPORT tests := MODULE
         SHARED dsRight := files.generateN(NOFOLD(0), numInputRows);
         EXPORT numExpected := (numInputRows DIV expectedMatches) * expectedMatches * expectedMatches + (numInputRows % expectedMatches) * (numInputRows % expectedMatches);
 
-        EXPORT joinSmartInner := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, SMART, HINT(parallel_match(false)));
-        EXPORT joinSmartInnerParallel := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, SMART, HINT(parallel_match));
-        EXPORT joinSmartLeftOnly := JOIN(dsLeft, dsRight, (LEFT.id1-1) DIV expectedMatches = (RIGHT.id1-1) DIV expectedMatches, SMART, left only);
+        //Add a hash on each side to ensure the input dataset isn't sorted by the 
+        SHARED test(dsLeft l, dsRight r) := HASH64((l.id1-1) DIV expectedMatches) = HASH64((r.id1-1) DIV expectedMatches);
+        SHARED testOrdered(dsLeft l, dsRight r) := (l.id1-1) DIV expectedMatches = (r.id1-1) DIV expectedMatches;
+
+        EXPORT joinSmartInner := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART, HINT(parallel_match(false)));
+        EXPORT joinSmartInnerParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART, HINT(parallel_match));
+        EXPORT joinSmartLeftOnly := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART, left only);
+
+        EXPORT joinLocalOrderedSmartInner := JOIN(SORTED(dsLeft, (id1-1) DIV expectedMatches), dsRight, testOrdered(LEFT, RIGHT), SMART, HINT(parallel_match(false)), LOCAL);
+        EXPORT joinLocalUnorderedSmartInner := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART, HINT(parallel_match(false)), LOCAL);
     END;
 END;
