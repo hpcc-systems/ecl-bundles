@@ -6,7 +6,7 @@ import perform.config, perform.format, perform.files;
 ds := files.generateSimple();
 
 doSort(dataset(format.simpleRec) ds, unsigned scale) := FUNCTION
-    gr := GROUP(NOFOLD(ds), id1 DIV scale);
+    gr := GROUP(NOFOLD(ds), id1 DIV scale,LOCAL);
     s := SORT(gr, HASH32(id1));
     RETURN NOFOLD(GROUP(s));
 END;

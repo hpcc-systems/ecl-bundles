@@ -168,6 +168,7 @@ TBD:01h - Limits on index reads [class: indexread]
 | 02dc - Chained group sorts of 4, 8, 16 elements.
 | 02dd - 4 parallel group sorts of varying elements each.
 | 02de - 16 parallel group sorts of varying elements each.
+| 02df - 4 parallel large group sorts of varying elements each.
 
 03 Distribution
 +++++++++++++++

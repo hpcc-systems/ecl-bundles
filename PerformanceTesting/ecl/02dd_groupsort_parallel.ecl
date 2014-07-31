@@ -5,7 +5,7 @@ import perform.config, perform.format, perform.files;
 
 createSorted(unsigned scale) := FUNCTION
     ds := files.generateSimpleScaled(scale, 4);
-    gr := GROUP(NOFOLD(ds), id1 DIV scale);
+    gr := GROUP(NOFOLD(ds), id1 DIV scale,LOCAL);
     s := SORT(gr, HASH32(id1));
     RETURN NOFOLD(GROUP(s));
 END;
