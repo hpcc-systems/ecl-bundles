@@ -8,61 +8,61 @@ EXPORT Trigram := MODULE,FORWARD
     EXPORT License := 'http://www.apache.org/licenses/LICENSE-2.0';
     EXPORT Copyright := 'Copyright (C) 2014 HPCC Systems';
     EXPORT DependsOn := [];
-    EXPORT Version := '1.0.0';
+    EXPORT Version := '1.0.1';
   END;
-  /* Measure string similarity based upon ration of common trigrams to all trigrams
+  /* Measure string similarity based upon ratio of common trigrams to all trigrams
    * found in the UNICODE argument strings.
    * @param l_str     the left string
    * @param r_str     the right string
    * @param uniq_ends distinguish the first and last trigrams.
-   * @return          the ration of the number of trigrams in common to the combined
+   * @return          the ratio of the number of trigrams in common to the combined
    *                  number of trigrams from both strings
    */
   EXPORT REAL8 compare_unicode(UNICODE l_str, UNICODE r_str,
                                BOOLEAN uniq_ends=FALSE) := FUNCTION
+    UNSIGNED quick_max := 5000;
     UNICODE1 begin_text := IF(uniq_ends, u'\0002', u' ');
     UNICODE1 end_text := IF(uniq_ends, u'\0003', u' ');;
     tgram_rec := RECORD
-      UNSIGNED2 l_count;
-      UNSIGNED2 r_count;
-      UNSIGNED2 common;
+      UNSIGNED2 l_str;
+      UNSIGNED2 r_str;
       UNICODE3 t_gram;
     END;
-    ds := DATASET([{l_str, r_str}], {UNICODE l_str, UNICODE r_str});
+    str_rec := {UNICODE str};
+    // Datasets are empty when data is under the quick measure threshold
+    ds_l := DATASET([{l_str}], str_rec)(LENGTH(l_str)+LENGTH(r_str) >= quick_max);
+    ds_r := DATASET([{r_str}], str_rec)(LENGTH(l_str)+LENGTH(r_str) >= quick_max);
     // make the bags of trigrams
-    tgram_rec make_tg(RECORDOF(ds) d, UNSIGNED c, UNSIGNED1 pick) := TRANSFORM
-      UNICODE  w_str := TRIM(CHOOSE(pick, d.l_str, d.r_str));
+    tgram_rec make_tg(str_rec d, UNSIGNED c, UNSIGNED pick) := TRANSFORM
+      UNICODE  w_str := d.str;
       UNICODE3 first_str := begin_text + w_str[1..2];
       UNICODE3 mid_str := w_str[c-1..c+1];
       UNICODE3 last_str := w_str[c-1..c] + end_text;
       SELF.t_gram := MAP(c BETWEEN 2 AND LENGTH(w_str)-1  => mid_str,
                          c = 1                            => first_str,
                          last_str);
-      SELF.l_count := IF(pick = 1, 1, 0);
-      SELF.r_count := IF(pick = 1, 0, 1);
-      SELF.common := 0;
+      SELF.l_str := IF(pick = 1, 1, 0);
+      SELF.r_str := IF(pick = 1, 0, 1);
     END;
-    l_tgrams := NORMALIZE(ds, LENGTH(LEFT.l_str), make_tg(LEFT, COUNTER, 1));
-    r_tgrams := NORMALIZE(ds, LENGTH(LEFT.r_str), make_tg(LEFT, COUNTER, 2));
-    indv_rec := SORT(l_tgrams+r_tgrams, t_gram);
-    // roll for easy counting for easy counting
-    tgram_rec roll_tgram(tgram_rec accum, tgram_rec next) := TRANSFORM
-      SELF.t_gram := accum.t_gram;
-      SELF.l_count := accum.l_count + next.l_count;
-      SELF.r_count := accum.r_count + next.r_count;
-      SELF.common  := MIN(SELF.l_count, SELF.r_count);
-    END;
-    roll_rec := ROLLUP(indv_rec, roll_tgram(LEFT,RIGHT), t_gram);
-    common_card := 2 * SUM(roll_rec, common);
-    tot_card := SUM(roll_rec, l_count) + SUM(roll_rec, r_count);
+    l_tgrams := NORMALIZE(ds_l, LENGTH(LEFT.str), make_tg(LEFT, COUNTER, 1));
+    r_tgrams := NORMALIZE(ds_r, LENGTH(LEFT.str), make_tg(LEFT, COUNTER, 2));
+    tgram_d0 := TABLE(l_tgrams + r_tgrams,
+                      {l_count:=SUM(GROUP,l_str), r_count:=SUM(GROUP,r_str)
+                      }, t_gram, FEW);
+    tgram_d1 := TABLE(tgram_d0,
+                      {l_r_sum:=l_count+r_count, l_r_min:=MIN(l_count, r_count)});
+    tgram_ds := TABLE(tgram_d1,
+                      {total := SUM(GROUP,l_r_sum), common:=SUM(GROUP,l_r_min)});
+    common_count := 2 * tgram_ds[1].common;
+    tot_count := tgram_ds[1].total;
     REAL8 quick := quick_compare(l_str, r_str, uniq_ends);
-    REAL8 ret_val := MAP(LENGTH(l_str)=0 AND LENGTH(r_str)=0  => 1.0,
-                         LENGTH(l_str)=0                      => 0.0,
-                         LENGTH(r_str)=0                      => 0.0,
-                         l_str = r_str                        => 1.0,
-                         LENGTH(l_str)=1 OR LENGTH(r_str)=1   => 0.0,
-                         LENGTH(l_str) + LENGTH(r_str) < 5000 => quick,
-                         common_card/tot_card);
+    REAL8 ret_val := MAP(LENGTH(l_str)=0 AND LENGTH(r_str)=0       => 1.0,
+                         LENGTH(l_str)=0                           => 0.0,
+                         LENGTH(r_str)=0                           => 0.0,
+                         l_str = r_str                             => 1.0,
+                         LENGTH(l_str)=1 OR LENGTH(r_str)=1        => 0.0,
+                         LENGTH(l_str) + LENGTH(r_str) < quick_max => quick,
+                         common_count/tot_count);
     RETURN ret_val;
   END;
   /* Measure string similarity based upon ration of common trigrams to all trigrams
