@@ -4,6 +4,8 @@ import std.System.Workunit AS Wu;
 import Std.System.Job;
 import Std.Str;
 
+boolean outputHtml := FALSE;
+
 //nokey - the results from this query are output in the log output
 
 wuRecord := RECORD
@@ -138,6 +140,29 @@ createValueTable(dataset(resultRec) ds, real scale, unsigned numPlaces) := FUNCT
 END;
 
 
+createSummaryTable(DATASET(xyValueRec) values) := FUNCTION
+
+    valueRec := { UTF8 value; };
+    resultRec := { UTF8 label; DATASET(valueRec) values; };
+    
+    concatRows(GROUPED DATASET(xyValueRec) Values) := FUNCTION
+        resultRec rollupColumns(DATASET(xyValueRec) columns) := TRANSFORM
+            SELF.label := columns[1].text;
+            SELF.values := PROJECT(columns[2..], TRANSFORM(valueRec, SELF.value := LEFT.text));
+        END;
+    
+        RETURN ROLLUP(values, GROUP, rollupColumns(ROWS(LEFT)));
+    END;
+
+    RETURN concatRows(GROUP(values, y));
+END;
+
+valuesProcess := createValueTable(interesting(statName = 'Process'), 0.000000001, 3);
+
+valuesMemory := createValueTable(interesting(statName = 'roxiehwm'), 0.000001, 3);
+
+#IF (outputHtml)
+
 createHtmlTable(DATASET(xyValueRec) values) := FUNCTION
 
     import CellFormatter.HTML;
@@ -164,40 +189,16 @@ createHtmlTable(DATASET(xyValueRec) values) := FUNCTION
     RETURN TABLE(byAll, { UTF8 text__html := HTML.Table(text, TRUE); });
 END;
 
-createSummaryTable(DATASET(xyValueRec) values) := FUNCTION
-
-    valueRec := { UTF8 value; };
-    resultRec := { UTF8 label; DATASET(valueRec) values; };
-    
-    concatRows(GROUPED DATASET(xyValueRec) Values) := FUNCTION
-        resultRec rollupColumns(DATASET(xyValueRec) columns) := TRANSFORM
-            SELF.label := columns[1].text;
-            SELF.values := PROJECT(columns[2..], TRANSFORM(valueRec, SELF.value := LEFT.text));
-        END;
-    
-        RETURN ROLLUP(values, GROUP, rollupColumns(ROWS(LEFT)));
-    END;
-
-    RETURN concatRows(GROUP(values, y));
-END;
-
-valuesProcess := createValueTable(interesting(statName = 'Process'), 0.000000001, 3);
-
-valuesMemory := createValueTable(interesting(statName = 'roxiehwm'), 0.000001, 3);
-
-boolean outputHtml := TRUE;
-
-IF (outputHtml,
     [
     output(createHtmlTable(valuesProcess),NAMED('Time_Trends'));
     output(createHtmlTable(valuesMemory),NAMED('Memory_Trends'))
     ]
-,
+#else
     [
     output(createSummaryTable(valuesProcess),NAMED('Time_Trends'));
     output(createSummaryTable(valuesMemory),NAMED('Memory_Trends'))
     ]
-);
+#end
 
 //output(interesting,NAMED('Interesting'));
 //output(uniqueInstances,,NAMED('Instances'));

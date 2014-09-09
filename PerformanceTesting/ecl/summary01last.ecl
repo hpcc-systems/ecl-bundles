@@ -45,7 +45,7 @@ END;
 gatherStatistics(DATASET(wuRecord) wus) := FUNCTION
 
     gatheredRecord addStats(wuRecord l) := TRANSFORM
-        stats := Wu.WorkunitStatistics(l.wuid);
+        stats := Wu.WorkunitStatistics(l.wuid, false);
         
         wu.StatisticRecord convertTimingToStat(wu.TimingRecord l) := TRANSFORM
             import Std.Str;
@@ -87,8 +87,8 @@ END;
 expandStatistics(DATASET(gatheredRecord) wus) := FUNCTION
 
     StatisticRecord t(gatheredRecord l) := TRANSFORM
-        SELF.time := REALFORMAT(l.statistics(name = 'Process')[1].value / 100000000, 12, 3) + 's';
-        SELF.mem := REALFORMAT(l.statistics(name = 'roxiehwm')[1].value / 1000, 10, 3) + 'Mb';
+        SELF.time := REALFORMAT(l.statistics(scope = 'Process' OR name = 'Process')[1].value / 100000000.0, 12, 3) + 's';
+        SELF.mem := REALFORMAT(l.statistics(name = 'roxiehwm')[1].value / 1000.0, 10, 3) + 'Mb';
         SELF := l;
     END;
 
