@@ -304,6 +304,7 @@ TBD:01h - Limits on index reads [class: indexread]
 | 10ad - sort a set of generated child rows
 | 10ae - project a global inline dataset
 | 10af - project and lookup in a global dictionary
+| 10ag - hash aggregation of different fields within a rollup group
 
 11 Smart joins
 ++++++++++++++++
