@@ -161,6 +161,15 @@ TBD:01h - Limits on index reads [class: indexread]
 | 02ci - 16 Parallel local sorts (16x total records)
 | 02cj - 16 Parallel global sorts (16x total records)
 
+02d - Group sorting [class: sort]
+----------------------------------------------
+| 02da - A single local sort - already in order
+| 02db - A group sort of a single row at a time [ same as 02da ]
+| 02dc - Chained group sorts of 4, 8, 16 elements.
+| 02dd - 4 parallel group sorts of varying elements each.
+| 02de - 16 parallel group sorts of varying elements each.
+| 02df - 4 parallel large group sorts of varying elements each.
+
 03 Distribution
 +++++++++++++++
 
