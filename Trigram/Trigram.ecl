@@ -8,7 +8,7 @@ EXPORT Trigram := MODULE,FORWARD
     EXPORT License := 'http://www.apache.org/licenses/LICENSE-2.0';
     EXPORT Copyright := 'Copyright (C) 2014 HPCC Systems';
     EXPORT DependsOn := [];
-    EXPORT Version := '1.0.1';
+    EXPORT Version := '1.0.2';
   END;
   /* Measure string similarity based upon ratio of common trigrams to all trigrams
    * found in the UNICODE argument strings.
@@ -30,22 +30,22 @@ EXPORT Trigram := MODULE,FORWARD
     END;
     str_rec := {UNICODE str};
     // Datasets are empty when data is under the quick measure threshold
-    ds_l := DATASET([{l_str}], str_rec)(LENGTH(l_str)+LENGTH(r_str) >= quick_max);
-    ds_r := DATASET([{r_str}], str_rec)(LENGTH(l_str)+LENGTH(r_str) >= quick_max);
+    ds_l := DATASET([{l_str}], str_rec);
+    ds_r := DATASET([{r_str}], str_rec);
     // make the bags of trigrams
     tgram_rec make_tg(str_rec d, UNSIGNED c, UNSIGNED pick) := TRANSFORM
       UNICODE  w_str := d.str;
       UNICODE3 first_str := begin_text + w_str[1..2];
       UNICODE3 mid_str := w_str[c-1..c+1];
       UNICODE3 last_str := w_str[c-1..c] + end_text;
-      SELF.t_gram := MAP(c BETWEEN 2 AND LENGTH(w_str)-1  => mid_str,
+      SELF.t_gram := MAP(c BETWEEN 2 AND my_len(w_str)-1  => mid_str,
                          c = 1                            => first_str,
                          last_str);
       SELF.l_str := IF(pick = 1, 1, 0);
       SELF.r_str := IF(pick = 1, 0, 1);
     END;
-    l_tgrams := NORMALIZE(ds_l, LENGTH(LEFT.str), make_tg(LEFT, COUNTER, 1));
-    r_tgrams := NORMALIZE(ds_r, LENGTH(LEFT.str), make_tg(LEFT, COUNTER, 2));
+    l_tgrams := NORMALIZE(ds_l, my_len(LEFT.str), make_tg(LEFT, COUNTER, 1));
+    r_tgrams := NORMALIZE(ds_r, my_len(LEFT.str), make_tg(LEFT, COUNTER, 2));
     tgram_d0 := TABLE(l_tgrams + r_tgrams,
                       {l_count:=SUM(GROUP,l_str), r_count:=SUM(GROUP,r_str)
                       }, t_gram, FEW);
@@ -56,12 +56,12 @@ EXPORT Trigram := MODULE,FORWARD
     common_count := 2 * tgram_ds[1].common;
     tot_count := tgram_ds[1].total;
     REAL8 quick := quick_compare(l_str, r_str, uniq_ends);
-    REAL8 ret_val := MAP(LENGTH(l_str)=0 AND LENGTH(r_str)=0       => 1.0,
-                         LENGTH(l_str)=0                           => 0.0,
-                         LENGTH(r_str)=0                           => 0.0,
-                         l_str = r_str                             => 1.0,
-                         LENGTH(l_str)=1 OR LENGTH(r_str)=1        => 0.0,
-                         LENGTH(l_str) + LENGTH(r_str) < quick_max => quick,
+    REAL8 ret_val := MAP(my_len(l_str)=0 AND my_len(r_str)=0     => 1.0,
+                         my_len(l_str)=0                         => 0.0,
+                         my_len(r_str)=0                         => 0.0,
+                         l_str = r_str                           => 1.0,
+                         my_len(l_str)=1 OR my_len(r_str)=1      => 0.0,
+                         my_len(l_str)+my_len(r_str)<quick_max   => quick,
                          common_count/tot_count);
     RETURN ret_val;
   END;
@@ -77,6 +77,13 @@ EXPORT Trigram := MODULE,FORWARD
                                 BOOLEAN uniq_ends=FALSE) := FUNCTION
     RETURN compare_unicode((UNICODE) l_str, (UNICODE) r_str, uniq_ends);
   END;
+  // private work functions
+  SHARED UNSIGNED4 my_len(UNICODE str) := BEGINC++
+  #body
+  #option pure
+    while (lenStr && str[lenStr-1]==0x0020) lenStr--;
+    return lenStr;
+  ENDC++;
   SHARED REAL8 quick_compare(UNICODE l, UNICODE r,
                                 BOOLEAN uniq_ends=FALSE) := BEGINC++
   // Helper functions
