@@ -201,6 +201,7 @@ TBD:01h - Limits on index reads [class: indexread]
 | 04ac - Simple join between two datasets, 1 match per row. parallel join
 | 04ae - Simple join between two datasets, 1 match per row. hash join
 | 04af - Simple join between two datasets, 1 match per row. smart join
+| 04ag - Simple join between two datasets, 1 match per row. inputs happen to be sorted (eclcc doesn't know) [ compare with 04aa ]
 | 04ba - Simple join between two datasets, 4 matches per row.
 | 04bb - Simple join between two datasets, 4 matches per row. unsorted output
 | 04bc - Simple join between two datasets, 4 matches per row. parallel join
@@ -329,3 +330,6 @@ TBD:01h - Limits on index reads [class: indexread]
 | 11cb - smart join, fall back to local join, parallel
 | 11cc - smart join, fall back to local join, parallel
 | 11cd - smart join, fall back to full join, parallel
+| 11da - local smart join, all in memory
+| 11db - local smart join, fall back to full join, sort required
+| 11dc - local smart join, fall back to full join, no sort required [ should be faster than 11db ]
