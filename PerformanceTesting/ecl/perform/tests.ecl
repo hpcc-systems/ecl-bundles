@@ -13,17 +13,17 @@ EXPORT tests := MODULE
         SHARED test(dsLeft l, dsRight r) := HASH64((l.id1-1) DIV expectedMatches) = HASH64((r.id1-1) DIV expectedMatches);
         SHARED testOrdered(dsLeft l, dsRight r) := (l.id1-1) DIV expectedMatches = (r.id1-1) DIV expectedMatches;
         
-        EXPORT joinNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT));
-        EXPORT joinOrderedInputsNormal := JOIN(dsLeft, dsRight, testOrdered(LEFT, RIGHT)); // inputs happen to be ordered
-        EXPORT joinUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), UNORDERED);
-        EXPORT joinParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HINT(parallel_match));
+        EXPORT joinNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED);
+        EXPORT joinOrderedInputsNormal := JOIN(dsLeft, dsRight, testOrdered(LEFT, RIGHT), STREAMED); // inputs happen to be ordered
+        EXPORT joinUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), UNORDERED, STREAMED);
+        EXPORT joinParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HINT(parallel_match), STREAMED);
         EXPORT joinLookup := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), MANY LOOKUP);
         EXPORT joinHash := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HASH);
         EXPORT joinSmart := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART);
 
-        EXPORT joinLocalNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), LOCAL);
-        EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), UNORDERED, LOCAL);
-        EXPORT joinLocalParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HINT(parallel_match), LOCAL);
+        EXPORT joinLocalNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED, LOCAL);
+        EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED, UNORDERED, LOCAL);
+        EXPORT joinLocalParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HINT(parallel_match), STREAMED, LOCAL);
         EXPORT joinLocalLookup := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), MANY LOOKUP, LOCAL);
         EXPORT joinLocalHash := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HASH, LOCAL);
         EXPORT joinLocalSmart := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART, LOCAL);
