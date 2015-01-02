@@ -1,5 +1,6 @@
 //class=disk
 //class=diskwrite
+//class=setup
 
 import perform.config;
 import perform.format;
