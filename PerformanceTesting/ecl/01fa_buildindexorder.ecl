@@ -1,5 +1,6 @@
 //class=index
 //class=indexwrite
+//class=setup
 
 import perform.config;
 import perform.format;
