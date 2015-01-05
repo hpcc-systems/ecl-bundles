@@ -2,8 +2,8 @@
 //class=parallel
 //class=join
 
-import $ as perform;
-import perform.tests;
+import $ as suite;
+import suite.perform.tests;
 
 j := tests.join(4096);
 output(COUNT(NOFOLD(j.joinParallel)) = j.numExpected);

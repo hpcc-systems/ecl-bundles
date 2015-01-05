@@ -2,7 +2,8 @@
 //class=parallel
 //class=diskread
 
-import perform.config, perform.format, perform.files;
+import $ as suite;
+import suite.perform.config, suite.perform.format, suite.perform.files;
 LOADXML('<xml/>');
 
 ds := files.diskSimple(false);

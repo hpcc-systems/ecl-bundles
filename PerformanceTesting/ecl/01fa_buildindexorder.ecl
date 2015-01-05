@@ -1,9 +1,10 @@
 //class=index
 //class=indexwrite
 
-import perform.config;
-import perform.format;
-import perform.files;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
 
 ds := DATASET(config.simpleRecordCount * config.indexScale, format.createSimple(COUNTER), DISTRIBUTED);
 

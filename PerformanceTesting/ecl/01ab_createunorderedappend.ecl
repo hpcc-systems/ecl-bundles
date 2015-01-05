@@ -2,9 +2,10 @@
 //class=parallel
 //class=create
 
-import perform.config;
-import perform.format;
-import perform.files;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
 
 LOADXML('<xml/>');
 

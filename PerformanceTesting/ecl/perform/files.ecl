@@ -1,4 +1,4 @@
-import perform.config, perform.format;
+import $.config, $.format;
 
 export files := MODULE
     export platform := __PLATFORM__;
