@@ -1,5 +1,5 @@
-import perform.config;
-import perform.files;
+import $.config;
+import $.files;
 
 EXPORT tests := MODULE
     EXPORT join(unsigned expectedMatches) := MODULE

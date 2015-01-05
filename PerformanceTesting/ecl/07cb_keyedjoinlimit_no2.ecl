@@ -1,10 +1,11 @@
 //class=index
 //class=keyedjoin
 
-import perform.config;
-import perform.format;
-import perform.files;
-import perform.util;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
+import suite.perform.util;
 
 unsigned scale := IF(config.smokeTest, 0x10000, 0x100);
 ds := files.generateSimpleScaled(0, scale);

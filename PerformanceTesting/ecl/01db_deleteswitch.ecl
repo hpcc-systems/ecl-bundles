@@ -4,7 +4,8 @@
 
 //NOTE: class matches test 01da so the files get cleaned up
 
-import perform.config, perform.format, perform.files;
+import $ as suite;
+import suite.perform.config, suite.perform.format, suite.perform.files;
 import Std.File;
 #option ('pickBestEngine', false);
 

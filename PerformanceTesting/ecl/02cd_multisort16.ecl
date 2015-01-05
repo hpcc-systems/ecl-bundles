@@ -2,7 +2,10 @@
 //class=parallel
 //class=sort
 
-import perform.config, perform.format, perform.files;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
 #option ('unlimitedResources', true); // generate all the sorts into a single graph
 
 s(unsigned delta) := FUNCTION

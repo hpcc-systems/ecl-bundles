@@ -2,7 +2,10 @@
 //class=stress
 //class=sort
 
-import perform.config, perform.format, perform.files;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
 
 numRecords := config.simpleRecordCount * 16;
 ds := files.generateN(0, numRecords);

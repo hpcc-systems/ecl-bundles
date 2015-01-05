@@ -1,7 +1,10 @@
 //class=memory
 //class=sort
 
-import perform.config, perform.format, perform.files;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
 
 ds := files.generateSimple();
 

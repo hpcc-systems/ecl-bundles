@@ -4,7 +4,10 @@
 #option ('unlimitedResources', true); // generate all the sorts into a single graph
 #option ('resourceMaxActivities', 100000);
 
-import perform.config, perform.format, perform.files;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
 
 createSorted(unsigned scale) := FUNCTION
     ds := files.generateSimpleScaled(scale, 16);

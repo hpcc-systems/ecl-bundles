@@ -3,10 +3,11 @@
 //class=indexread
 //class=stress
 
-import perform.config;
-import perform.format;
-import perform.files;
-import perform.util;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
+import suite.perform.util;
 
 unsigned scale := IF(config.smokeTest, 0x10000, 0x100);
 ds := files.generateSimpleScaled(0, scale);
@@ -28,7 +29,7 @@ resultRec t(ds l) := TRANSFORM
             id3g = util.byte(l.id3, 6) AND 
             id3h = util.byte(l.id3, 7)), id2), id2, ASSERT);
     SELF := l;
-END;
+END : onwarning(4515, ignore);   // id3a is deliberately (and painfully) skipped;
 
 p := PROJECT(ds, t(LEFT));
              

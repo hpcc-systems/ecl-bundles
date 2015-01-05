@@ -2,9 +2,9 @@
 //class=quick
 //class=create
 
-import perform.config;
-import perform.format;
-import perform.files;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.files;
 
 ds := files.generateSimple();
 

@@ -1,10 +1,11 @@
 //class=index
 //class=indexread
 
-import perform.config;
-import perform.format;
-import perform.files;
-import perform.util;
+import $ as suite;
+import suite.perform.config;
+import suite.perform.format;
+import suite.perform.files;
+import suite.perform.util;
 
 //Stepped index read
 ds := SORTED(STEPPED(files.manyIndex123(

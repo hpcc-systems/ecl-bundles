@@ -2,7 +2,8 @@
 //class=parallel
 //class=create
 
-import perform.create;
+import $ as suite;
+import suite.perform.create;
 
 LOADXML('<xml/>');
 
