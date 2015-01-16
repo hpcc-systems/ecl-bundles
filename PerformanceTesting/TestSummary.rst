@@ -15,6 +15,8 @@ This file contains a list of all the tests within the test suite, and what parti
 | 08.     Index read inside a child query
 | 09.     Global index read
 | 10.     Simple child queries
+| 11.     Smart join testing
+| 80.     Various miscellaneous tests picked up from other places.
 
 ToDo:
 * PARSE
@@ -67,6 +69,7 @@ These tests create lots of records, and test how different sources work
 | 01ac. ordered combine of rows from multiple sources [ concat is unthreaded ]
 | 01ad - single input, duplicate the output n-ways (outputs overlap)
 | 01ae - single input, split the output n-ways (no overlap between outputs)
+| 01af - execute multiple counts in parallel (no splitter)
 | 01ag..al - 2,4,8,12,16,32 way unordered append - tests scaling of the multi threaded concat.
 
 01b - Raw disk write speed [class: diskwrite]
@@ -317,7 +320,7 @@ TBD:01h - Limits on index reads [class: indexread]
 | 10ag - hash aggregation of different fields within a rollup group
 
 11 Smart joins
-++++++++++++++++
+++++++++++++++
 
 | 11aa - simple smart join (non spilling)
 | 11ab - smart join, fall back to local join
@@ -334,3 +337,9 @@ TBD:01h - Limits on index reads [class: indexread]
 | 11da - local smart join, all in memory
 | 11db - local smart join, fall back to full join, sort required
 | 11dc - local smart join, fall back to full join, no sort required [ should be faster than 11db ]
+
+
+80 Miscellaneous
+++++++++++++++++
+| 80aa - Join stress test from the old regression suite.
+| 80ab - Test to see how local sort time scales with size of data being sorted 
