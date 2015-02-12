@@ -21,7 +21,7 @@ and allow changes in speed and memory usage to be tracked over time.
 To run the regression suite, select the directory of the regression suite engine, and
 enter the following command:
 
-./ecl-test --timeout -1 --suiteDir <location-of-the-bundle-directory> run <cluster>
+./ecl-test --timeout -1 --suiteDir <location-of-the-bundle-directory> run -t=<cluster>
 
 Each of the tests in the regression suite is assigned to one or more classes.  This allows subsets of the
 regression tests to be included or excluded for a particular run.  Full details of the different classes is included
