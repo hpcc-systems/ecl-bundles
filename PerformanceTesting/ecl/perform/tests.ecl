@@ -10,7 +10,8 @@ EXPORT tests := MODULE
         EXPORT numExpected := (numInputRows DIV expectedMatches) * expectedMatches * expectedMatches + (numInputRows % expectedMatches) * (numInputRows % expectedMatches);
         
         //Add a hash on each side to ensure the input dataset isn't sorted by the id, hopefully won't introduce false positives!
-        SHARED test(dsLeft l, dsRight r) := HASH64((l.id1-1) DIV expectedMatches) = HASH64((r.id1-1) DIV expectedMatches);
+        SHARED testHash(dsLeft l, dsRight r) := HASH64((l.id1-1) DIV expectedMatches) = HASH64((r.id1-1) DIV expectedMatches);
+        SHARED test(dsLeft l, dsRight r) := IF(expectedMatches = 1, l.id1 = r.id1, testHash(l, r));
         SHARED testOrdered(dsLeft l, dsRight r) := (l.id1-1) DIV expectedMatches = (r.id1-1) DIV expectedMatches;
         
         EXPORT joinNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED);
