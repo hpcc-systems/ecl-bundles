@@ -8,6 +8,7 @@ import suite.perform.files;
 
 ds := files.generateSimple();
 
-s := sort(ds, id3);
+s1 := sort(ds, id3);
+s2 := SORTED(NOFOLD(s1), id3, local, assert);
 
-output(COUNT(NOFOLD(s)) = config.simpleRecordCount);
+output(COUNT(NOFOLD(s2)) = config.simpleRecordCount);
