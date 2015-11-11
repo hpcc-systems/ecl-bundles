@@ -1,10 +1,7 @@
 //class=memory
 //class=sort
-//version algo='quicksort'
 //version algo='parquicksort'
-//version algo='mergesort'
 //version algo='parmergesort'
-//version algo='heapsort'
 //version algo='tbbstableqsort'
 
 import ^ as root;
@@ -17,5 +14,6 @@ import suite.perform.files;
 
 ds := files.generateSimple();
 
-s1 := sort(ds, id3, local, stable(algo));
+//Check sort speed if already sorted 
+s1 := sort(NOFOLD(ds), id1, local, stable(algo));
 output(COUNT(NOFOLD(s1)) = config.simpleRecordCount);
