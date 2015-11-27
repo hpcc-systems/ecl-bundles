@@ -2,7 +2,7 @@
 //class=sort
 //version algo='parquicksort'
 //version algo='parmergesort'
-//version algo='tbbstableqsort'
+//version algo='tbbstableqsort',nohthor
 
 import ^ as root;
 algo := #IFDEFINED(root.algo, 'quicksort');
