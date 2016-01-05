@@ -6,7 +6,7 @@ export files := MODULE
     export thorprefix := '~perform::thorlcr::';
     export simpleName := prefix + 'simple';
     export paddedName := prefix + 'padded';
-    export indexName := prefix + 'index';
+    export indexName := thorprefix + 'index';
 
     export generateN(unsigned delta = 0, unsigned num) := NOFOLD(DATASET(num, format.createSimple(COUNTER + delta), DISTRIBUTED));
 
