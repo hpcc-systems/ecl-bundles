@@ -1,6 +1,7 @@
 //class=memory
 //class=quick
 //class=create
+//noroxie - parallel join helpers not currently implemented in roxie
 
 //version hintWriteWork=0,hintReadWork=0,hintNewHelper=false
 //version hintWriteWork=16,hintReadWork=0,hintNewHelper=false

@@ -8,7 +8,7 @@
 //version algo='tbbstableqsort',nohthor
 
 import ^ as root;
-algo := #IFDEFINED(root.algo, 'quicksort');
+algo := #IFDEFINED(root.algo, 'parmergesort');
 
 import $ as suite;
 import suite.perform.config;
