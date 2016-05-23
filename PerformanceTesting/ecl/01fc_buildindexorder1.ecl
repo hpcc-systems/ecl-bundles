@@ -1,6 +1,8 @@
 //class=index
 //class=indexwrite
 
+#onwarning (10120, ignore);
+
 import $ as suite;
 import suite.perform.config;
 import suite.perform.format;
