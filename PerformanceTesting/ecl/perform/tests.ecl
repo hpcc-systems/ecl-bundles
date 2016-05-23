@@ -23,7 +23,7 @@ EXPORT tests := MODULE
         EXPORT joinSmart := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART);
 
         EXPORT joinLocalNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED, LOCAL);
-        EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED, UNORDERED, LOCAL);
+        EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED, UNORDERED, LOCAL,HINT(newJoinHelper(true)));
         EXPORT joinLocalParallel := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HINT(parallel_match), STREAMED, LOCAL);
         EXPORT joinLocalLookup := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), MANY LOOKUP, LOCAL);
         EXPORT joinLocalHash := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HASH, LOCAL);

@@ -207,6 +207,7 @@ TBD:01h - Limits on index reads [class: indexread]
 | 04aa - Simple join between two datasets, 1 match per row.
 | 04ab - Simple join between two datasets, 1 match per row. unsorted output
 | 04ac - Simple join between two datasets, 1 match per row. parallel join
+| 04ad - Simple lookup join between two datasets, 1 match per row. parallel join
 | 04ae - Simple join between two datasets, 1 match per row. hash join
 | 04af - Simple join between two datasets, 1 match per row. smart join
 | 04ag - Simple join between two datasets, 1 match per row. inputs happen to be sorted (eclcc doesn't know) [ compare with 04aa ]
@@ -228,6 +229,8 @@ TBD:01h - Limits on index reads [class: indexread]
 | 04ec - Simple local join between two datasets, 1 match per row. parallel join
 | 04ee - Simple local hash join between two datasets, 1 match per row.
 | 04ef - Simple local smart join between two datasets, 1 match per row.
+| 04fa - Simple local join between two datasets, 64 matches per row.
+| 04fb - Simple local join between two datasets, 64 match per row. unsorted output
 
 05 Grouped aggregation [class: hashaggregate]
 +++++++++++++++++++++++++++++++++++++++++++++
@@ -342,6 +345,18 @@ TBD:01h - Limits on index reads [class: indexread]
 | 11da - local smart join, all in memory
 | 11db - local smart join, fall back to full join, sort required
 | 11dc - local smart join, fall back to full join, no sort required [ should be faster than 11db ]
+
+12 Parallel execution
++++++++++++++++++++++
+
+| 12aa - parallel table -> filter -> count
+| 12ab - inline -> parallel join -> count
+| 12ac - (parallel) inline -> (parallel) project -> (parallel) aggregate
+| 12ad - parallel inline -> count
+| 12ae - inline -> parallel disk write (uncompressed)
+| 12af - inline -> parallel disk write (compressed)
+| 12ba - inline -> local sort -> count  [ needs more work ]
+| 12bb - inline -> local sort -> parallel output
 
 
 80 Miscellaneous
