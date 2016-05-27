@@ -1,0 +1,3 @@
+<Warning><Code>10120</Code><Source>SLAVE #1</Source><Message>Graph graph1[1], indexwrite[5]: SLAVE #1 [192.168.0.200:20100]: BUILDINDEX: building single part key because marked as &apos;FEW&apos; but row count in excess of 10M</Message></Warning>
+<Dataset name='Result 1'>
+</Dataset>

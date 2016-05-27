@@ -2,7 +2,7 @@
 //class=indexwrite
 //class=setup
 
-import $ as suite;
+import $.^ as suite;
 import suite.perform.config;
 import suite.perform.format;
 import suite.perform.files;
@@ -18,6 +18,6 @@ i:= INDEX(ds,{
     unsigned1 id1f := id1 >> 16;
     unsigned1 id1g := id1 >> 8;
     unsigned1 id1h := id1 >> 0;
-    id2, id3 }, { id4 }, files.indexName+'_temp_id1xid2id3id4');
+    id2, id3 }, { id4 }, files.indexName+'_id1xid2id3id4');
     
 BUILDINDEX(i, OVERWRITE);
