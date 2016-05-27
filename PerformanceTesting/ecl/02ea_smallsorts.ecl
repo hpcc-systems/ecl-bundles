@@ -7,7 +7,6 @@
 //version algo='mergesort',nothor
 //version algo='parmergesort'
 //version algo='heapsort',nothor
-//version algo='insertionsort',nothor
 
 import ^ as root;
 algo := #IFDEFINED(root.algo, 'quicksort');
