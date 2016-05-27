@@ -279,9 +279,9 @@ TBD:01h - Limits on index reads [class: indexread]
 07d - Keyed join with limit,skip (hit) [class: keyedjoin]
 ---------------------------------------------------------
 
-| 07ca - keyed join, out of order, match(>1),limit(1)
-| 07cb - keyed join, out of order, match(>1),limit(1), wild component(0)
-| 07cc - keyed join, in order, match(255/256),limit(255)
+| 07da - keyed join, out of order, match(>1),limit(1)
+| 07db - keyed join, out of order, match(>1),limit(1), wild component(0)
+| 07dc - keyed join, in order, match(255/256),limit(255)
 
 07e - Keyed join with limit,skip,count (hit) [class: keyedjoin]
 ---------------------------------------------------------------

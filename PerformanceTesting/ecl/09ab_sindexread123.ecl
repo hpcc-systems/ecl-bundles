@@ -18,4 +18,12 @@ ds := SORTED(STEPPED(files.manyIndex123(
              
 cnt := COUNT(NOFOLD(ds));
 
-OUTPUT(cnt = 256 * 256 * 2);
+indexRecords := COUNT(files.manyIndex123);
+
+expected := MAP(
+    indexRecords <= 0x10000 => indexRecords,
+    indexRecords <= 0x20000 => 0x10000,
+    indexRecords <= 0x30000 => indexRecords - 0x10000,
+    0x20000);
+
+OUTPUT(cnt = expected);

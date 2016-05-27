@@ -165,4 +165,4 @@ s := IF(hintIsOrdered, SORTED(NOFOLD(p), id, ASSERT), p);
 
 cnt := NOFOLD(COUNT(NOFOLD(p), PARALLEL(IF(parallelCount,0,1))));
 
-OUTPUT(cnt - numRecords);// * 1 * 4 DIV 5);
+OUTPUT(cnt - numRecords * CLUSTERSIZE);// * 1 * 4 DIV 5);
