@@ -10,7 +10,7 @@ export files := MODULE
 
     export generateN(unsigned delta = 0, unsigned num) := NOFOLD(DATASET(num, format.createSimple(COUNTER + delta), DISTRIBUTED));
 
-    export generateSimple(unsigned delta = 0) := DATASET(config.simpleRecordCount, format.createSimple(COUNTER + delta), DISTRIBUTED);
+    export generateSimple(unsigned delta = 0) := DATASET(config.simpleRecordCount, format.createSimple(COUNTER + delta), DISTRIBUTED,HINT(heapflags(config.heapFlags)));
 
     export generateSimpleScaled(unsigned delta = 0, unsigned scale) := generateN(delta, config.simpleRecordCount DIV scale);
 
@@ -18,7 +18,7 @@ export files := MODULE
 
     EXPORT suffix(boolean compressed) := IF(compressed, '_compressed', '_uncompressed');
 
-    export diskSimple(boolean compressed) := DATASET(simpleName+suffix(compressed), format.simpleRec, FLAT);
+    export diskSimple(boolean compressed) := DATASET(simpleName+suffix(compressed), format.simpleRec, FLAT, HINT(heapflags(config.heapFlags)));
 
     export csvSimple(boolean compressed) := DATASET(simpleName+suffix(compressed)+'_csv', format.simpleRec, CSV);
 

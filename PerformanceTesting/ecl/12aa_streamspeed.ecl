@@ -111,7 +111,7 @@ ENDC++;
     SELF.id := performWork(c, writeWork);
 END;
 
-ds  := DATASET(numRecords, createSimple(COUNTER), LOCAL, PARALLEL(hintNumStrands),ORDERED(hintIsOrdered),HINT(strandBlockSize(hintBlockSize)));
+ds  := DATASET(numRecords, createSimple(COUNTER), LOCAL, PARALLEL(hintNumStrands),ORDERED(hintIsOrdered),HINT(strandBlockSize(hintBlockSize),heap(0x80)));
 
 readDs := NOFOLD(ds)(performWork(id, readWork) * NOFOLD(0) = 0);
 cnt := COUNT(NOFOLD(readDs));

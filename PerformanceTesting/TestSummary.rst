@@ -150,6 +150,9 @@ TBD:01h - Limits on index reads [class: indexread]
 | 02bf - Sort global with duplicates (only 1M unique keys)
 | 02bg - Sort global with duplicates (only 4K unique keys)
 | 02bh - Sort global with duplicates (a skewed distribution)
+| 02bi - Sort local already in order
+| 02bj - Sort local already in reverse order
+| 02bk - Sort local and filter every other record (to stress memory manager)
 
 02c - Multiple sorts in parallel [class: sort]
 ----------------------------------------------
