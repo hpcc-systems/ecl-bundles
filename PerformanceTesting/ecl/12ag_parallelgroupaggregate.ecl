@@ -70,6 +70,6 @@ agg := TABLE(NOFOLD(p), { cnt := COUNT(GROUP) }, PARALLEL(hintNumStrands));
 
 agg2 := NOFOLD(TABLE(NOFOLD(agg), { unsigned cnt := COUNT(GROUP), sumcnt := SUM(GROUP, cnt*cnt) }));
 
-OUTPUT(agg2[1].cnt - numRecords DIV 4);// * 1 * 4 DIV 5);
+OUTPUT(agg2[1].cnt - CLUSTERSIZE * numRecords DIV 4);// * 1 * 4 DIV 5);
 //OUTPUT(CHOOSEN(agg, 30));
 OUTPUT(agg2[1].sumcnt - (numRecords DIV 16) * (4+16+49+9) * CLUSTERSIZE );

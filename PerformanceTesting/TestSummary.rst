@@ -234,6 +234,9 @@ TBD:01h - Limits on index reads [class: indexread]
 | 04ef - Simple local smart join between two datasets, 1 match per row.
 | 04fa - Simple local join between two datasets, 64 matches per row.
 | 04fb - Simple local join between two datasets, 64 match per row. unsorted output
+| 04ga - Simple join between two datasets, 16 matches per row, different work in transform
+| 04gb - Simple join between two datasets, 16 matches per row, unsorted parallel, different work in transform
+| 04gc - Simple join between two datasets, 16 matches per row, paralel, different work in transform
 
 05 Grouped aggregation [class: hashaggregate]
 +++++++++++++++++++++++++++++++++++++++++++++

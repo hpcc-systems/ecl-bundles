@@ -2,6 +2,13 @@ import $.config;
 import $.files;
 
 EXPORT tests := MODULE
+    EXPORT unsigned8 performWork(unsigned8 value, unsigned iter) := BEGINC++
+        #option pure
+        for (unsigned i=0; i < iter; i++)
+            value = rtlHash64Data(sizeof(value), &value, value);
+        return value;
+    ENDC++;
+    
     EXPORT join(unsigned expectedMatches) := MODULE
         SHARED dsLeft := files.generateSimpleScaled(0, expectedMatches);
         SHARED dsRight := files.generateSimpleScaled(NOFOLD(0), expectedMatches);
@@ -21,6 +28,10 @@ EXPORT tests := MODULE
         EXPORT joinLookup := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), MANY LOOKUP);
         EXPORT joinHash := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), HASH);
         EXPORT joinSmart := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), SMART);
+
+        EXPORT joinNormalWork(unsigned work) := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), TRANSFORM({unsigned id}, SELF.id := performWork(LEFT.id1 + RIGHT.id1, work)), STREAMED);
+        EXPORT joinUnorderedWork(unsigned work) := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), TRANSFORM({unsigned id}, SELF.id := performWork(LEFT.id1 + RIGHT.id1, work)), UNORDERED, STREAMED);
+        EXPORT joinParallelWork(unsigned work) := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), TRANSFORM({unsigned id}, SELF.id := performWork(LEFT.id1 + RIGHT.id1, work)), HINT(parallel_match), STREAMED);
 
         EXPORT joinLocalNormal := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED, LOCAL);
         EXPORT joinLocalUnordered := JOIN(dsLeft, dsRight, test(LEFT, RIGHT), STREAMED, UNORDERED, LOCAL,HINT(newJoinHelper(true)));

@@ -5,43 +5,23 @@
 //The first set of versions are used to create a vaguely representative set of timings that can be compared between versions
 
 //version hintNumStrands=1,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=1,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=1,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 
-//version hintNumStrands=1,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=1,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 //version hintNumStrands=1,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 
 //version hintNumStrands=4,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=4,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=4,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 
-//version hintNumStrands=4,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=4,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 //version hintNumStrands=4,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 
 //version hintNumStrands=4,hintBlockSize=500,hintProjectWork=4,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
-//version hintNumStrands=4,hintBlockSize=500,hintProjectWork=4,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
-//version hintNumStrands=4,hintBlockSize=500,hintProjectWork=4,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
 
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
 //version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
 
 //version hintNumStrands=16,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=4,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 //version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=false,hintParallelCount=false,hintIsOrdered=false
 
 //version hintNumStrands=16,hintBlockSize=500,hintProjectWork=4,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=4,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=4,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
 
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
-//version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
 //version hintNumStrands=16,hintBlockSize=500,hintProjectWork=64,hintParallelSource=true,hintParallelCount=true,hintIsOrdered=true
 
 //The following tests are primarily here to compare the different varieties within a version
