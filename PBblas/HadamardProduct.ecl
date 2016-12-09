@@ -41,6 +41,6 @@ EXPORT DATASET(Layout_Cell)
   X_dist := SORT(DISTRIBUTE(X, HASH32(wi_id, x, y)), wi_id, x, y, LOCAL);
   Y_dist := SORT(DISTRIBUTE(Y, HASH32(wi_id, x, y)), wi_id, x, y, LOCAL);
   
-  result := JOIN(X_dist, Y_dist, LEFT.x = RIGHT.x AND LEFT.y = RIGHT.y AND LEFT.wi_id = RIGHT.wi_id, mult(LEFT, RIGHT), LOCAL);
+  result := JOIN(X_dist, Y_dist, LEFT.wi_id = RIGHT.wi_id AND LEFT.x = RIGHT.x AND LEFT.y = RIGHT.y, mult(LEFT, RIGHT), LOCAL);
   RETURN result;
 END;
