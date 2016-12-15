@@ -1,19 +1,19 @@
-ecl-bundles
-===========
+ECL bundles repository
+======================
 
 This repository serves as a central list of all known ECL bundles.
 
 Bundles listed here fall into three categories:
 
-supported bundles
+Supported bundles
   are maintained by the HPCC platform team, and tested against each release.
 
-approved bundles
+Approved bundles
   are maintained by external contributors, but have passed initial review
   and testing by the HPCC platform team and thus should be considered stable and safe to
   use, and should remain compatible across platform versions
 
-other bundles
+Other bundles
   are created and maintained by external contributors, and have not been
   approved by the platform team. Use at your own risk
 
