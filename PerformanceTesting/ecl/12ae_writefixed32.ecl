@@ -4,18 +4,10 @@
 
 //version hintNumStrands=0
 //version hintNumStrands=4,hintBlockSize=1000
-//version hintNumStrands=4,hintBlockSize=1000
-//version hintNumStrands=4,hintBlockSize=1000
-//version hintNumStrands=4,hintBlockSize=10000
-//version hintNumStrands=4,hintBlockSize=10000
-//version hintNumStrands=4,hintBlockSize=10000
 //version hintNumStrands=2,hintBlockSize=10000
+//version hintNumStrands=4,hintBlockSize=10000
 //version hintNumStrands=6,hintBlockSize=10000
 //version hintNumStrands=4,hintBlockSize=40000
-//version hintNumStrands=4,hintBlockSize=40000
-//version hintNumStrands=4,hintBlockSize=40000
-//version hintNumStrands=4,hintBlockSize=100000
-//version hintNumStrands=4,hintBlockSize=100000
 //version hintNumStrands=4,hintBlockSize=100000
 
 import ^ as root;
