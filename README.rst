@@ -21,12 +21,14 @@ For more information about how to create an Ecl bundle, see the `Ecl Bundle Writ
 
 Supported bundles
 =================
-PerformanceTesting: Performance test suite              - https://github.com/hpcc-systems/PerformanceTesting
-ML_Core:            Machine Learning core bundle        - https://github.com/hpcc-systems/ML_Core
+
+| PerformanceTesting | Performance test suite                         | https://github.com/hpcc-systems/PerformanceTesting
+| ML_Core            | Machine Learning core bundle                   | https://github.com/hpcc-systems/ML_Core
+| PBblas             | Parallel BLAS support for machine learning     | https://github.com/hpcc-systems/PBblas
 
 Approved bundles
 ================
-MySqlImport:        Import schemas from MySQL           - https://github.com/hpcc-systems/MySqlImport
+| MySqlImport        | Import schemas from MySQL                      | https://github.com/hpcc-systems/MySqlImport
 
 Other bundles
 =============
