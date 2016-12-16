@@ -28,18 +28,24 @@ Supported bundles
 =================
 
 +---------------------+------------------------------------------------+-----------------------------------------------------+
-|  PerformanceTesting | Performance test suite                         | https://github.com/hpcc-systems/PerformanceTesting  |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
 |  ML_Core            | Machine Learning core bundle                   | https://github.com/hpcc-systems/ML_Core             |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 |  PBblas             | Parallel BLAS support for machine learning     | https://github.com/hpcc-systems/PBblas              |
++---------------------+------------------------------------------------+-----------------------------------------------------+
+|  PerformanceTesting | Performance test suite                         | https://github.com/hpcc-systems/PerformanceTesting  |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 
 Approved bundles
 ================
 
 +---------------------+------------------------------------------------+-----------------------------------------------------+
+| CellFormatter       | Format ECL data for display                    | https://github.com/hpcc-systems/CellFormatter       |
++---------------------+------------------------------------------------+-----------------------------------------------------+
 | MySqlImport         | Import schemas from MySQL                      | https://github.com/hpcc-systems/MySqlImport         |
++---------------------+------------------------------------------------+-----------------------------------------------------+
+| StringMatch         | Various string matching algorithms             | https://github.com/hpcc-systems/StringMatch         |
++---------------------+------------------------------------------------+-----------------------------------------------------+
+| Trigram             | Trigram manipulation                           | https://github.com/hpcc-systems/Trigram             |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 
 Other bundles
