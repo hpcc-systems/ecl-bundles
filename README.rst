@@ -34,7 +34,7 @@ Supported bundles
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 |  PerformanceTesting | Performance test suite                         | https://github.com/hpcc-systems/PerformanceTesting  |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
-|  Vizualizer         | HPCC Visualizations support                    | https://github.com/hpcc-systems/Visualizer          |
+|  Visualizer         | HPCC Visualizations support                    | https://github.com/hpcc-systems/Visualizer          |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 
 Approved bundles
