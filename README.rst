@@ -55,4 +55,5 @@ Other bundles
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 | Finance Library     | Commonly used financial operations             | https://github.com/JamesDeFabia/FinanceLibrary      |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
-
+| PrefixTree          | Improves Levenshtein edit distance performance | https://github.com/Charles-Kaminski/PrefixTree      |
++---------------------+------------------------------------------------+-----------------------------------------------------+
