@@ -41,6 +41,8 @@ Approved bundles
 ================
 
 +---------------------+------------------------------------------------+-----------------------------------------------------+
+| Bloom               | Bloom filter support                           | https://github.com/hpcc-systems/Bloom               |
++---------------------+------------------------------------------------+-----------------------------------------------------+
 | CellFormatter       | Format ECL data for display                    | https://github.com/hpcc-systems/CellFormatter       |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 | MySqlImport         | Import schemas from MySQL                      | https://github.com/hpcc-systems/MySqlImport         |
