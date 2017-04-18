@@ -22,6 +22,12 @@ a pull request against this file to add your bundle's repository to the appropri
 
 For more information about how to create an Ecl bundle, see the `Ecl Bundle Writer's Guide`_.
 
+To install a bundle to your development machine, use the ecl command line tool:
+
+ecl bundle install <bundlefile>.ecl
+
+For complete details, see the Client Tools Manual, available in the download section of hpccsystems.com
+
 .. _`Ecl Bundle Writer's Guide`: https://github.com/hpcc-systems/HPCC-Platform/blob/master/ecl/ecl-bundle/BUNDLES.rst
 
 Supported bundles
