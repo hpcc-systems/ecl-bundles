@@ -38,18 +38,16 @@ Supported bundles
 +-----------------------+----------------------------------------------+-----------------------------------------------------+
 | PBblas                | Parallel BLAS support for machine learning   | https://github.com/hpcc-systems/PBblas              |
 +-----------------------+----------------------------------------------+-----------------------------------------------------+
-| LinearRegression      | Ordinary Least Squares Linear Regression     | https://github.com/hpcc-systems/LinearRegression    |
-+-----------------------+----------------------------------------------+-----------------------------------------------------+
-| LogisticRegression    | Logistic Regression for binomial or          | https://github.com/hpcc-systems/LogisticRegression  |
-|                       | multinomial classification                   |                                                     |                       
-+-----------------------+----------------------------------------------+-----------------------------------------------------+
 | GLM                   | General Linear Model                         | https://github.com/hpcc-systems/GLM                 |
-+-----------------------+----------------------------------------------+-----------------------------------------------------+
-| SupportVectorMachines | Support Vector Machines for classification   | https://github.com/hpccsystems/SupportVectorMachines| 
-|                       | and regression                               |                                                     |
-+-----------------------+----------------------------------------------+-----------------------------------------------------+
++-----------------------+-----------------------------------------------------------+----------------------------------------+
 | LearningTrees         | Random forest classification and regression  | https://github.com/hpcc-systems/LearningTrees       |                                    
 +-----------------------+----------------------------------------------+-----------------------------------------------------+           
+| LinearRegression      | Ordinary Least Squares Linear Regression     | https://github.com/hpcc-systems/LinearRegression    |
++-----------------------+----------------------------------------------------------------+-----------------------------------------------------+
+| LogisticRegression    | Logistic Regression for binomial or multinomial classification | https://github.com/hpcc-systems/LogisticRegression  |
++-----------------------+----------------------------------------------------------------+-----------------------------------------------------+
+| SupportVectorMachines | Support Vector Machines for classification and regression      | https://github.com/hpccsystems/SupportVectorMachines| 
++-----------------------+----------------------------------------------+-----------------------------------------------------------------------+
 | PerformanceTesting    | Performance test suite                       | https://github.com/hpcc-systems/PerformanceTesting  |          
 +-----------------------+----------------------------------------------+-----------------------------------------------------+
 | Visualizer            | HPCC Visualizations support                  | https://github.com/hpcc-systems/Visualizer          |        
