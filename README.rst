@@ -75,3 +75,5 @@ Other bundles
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 | PrefixTree          | Improves Levenshtein edit distance performance | https://github.com/Charles-Kaminski/PrefixTree      |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
+| File Management     | Manages the promotion of a set of files        | https://github.com/johnholt/File_Management         |
++---------------------+------------------------------------------------+-----------------------------------------------------+
