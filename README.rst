@@ -63,6 +63,8 @@ Approved bundles
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 | MySqlImport         | Import schemas from MySQL                      | https://github.com/hpcc-systems/MySqlImport         |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
+| SALT Profile        + Data profiling tool                            |  https://github.com/hpcc-systems/SALT_Profile       +
++---------------------+------------------------------------------------+-----------------------------------------------------+
 | StringMatch         | Various string matching algorithms             | https://github.com/hpcc-systems/StringMatch         |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 | Trigram             | Trigram manipulation                           | https://github.com/hpcc-systems/Trigram             |
