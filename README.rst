@@ -48,6 +48,8 @@ Supported bundles
 +-----------------------+----------------------------------------------+------------------------------------------------------+
 | SupportVectorMachines | Support Vector Machines                      | https://github.com/hpcc-systems/SupportVectorMachines| 
 +-----------------------+----------------------------------------------+------------------------------------------------------+
+| DataPatterns          + Data profiling tool                          | https://github.com/hpcc-systems/DataPatterns         +
++-----------------------+----------------------------------------------+------------------------------------------------------+
 | PerformanceTesting    | Performance test suite                       | https://github.com/hpcc-systems/PerformanceTesting   |          
 +-----------------------+----------------------------------------------+------------------------------------------------------+
 | Visualizer            | HPCC Visualizations support                  | https://github.com/hpcc-systems/Visualizer           |        
@@ -62,8 +64,6 @@ Approved bundles
 | CellFormatter       | Format ECL data for display                    | https://github.com/hpcc-systems/CellFormatter       |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 | MySqlImport         | Import schemas from MySQL                      | https://github.com/hpcc-systems/MySqlImport         |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| DataPatterns        + Data profiling tool                            | https://github.com/hpcc-systems/DataPatterns        +
 +---------------------+------------------------------------------------+-----------------------------------------------------+
 | StringMatch         | Various string matching algorithms             | https://github.com/hpcc-systems/StringMatch         |
 +---------------------+------------------------------------------------+-----------------------------------------------------+
