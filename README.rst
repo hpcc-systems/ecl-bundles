@@ -24,7 +24,7 @@ For more information about how to create an Ecl bundle, see the `Ecl Bundle Writ
 
 To install a bundle to your development machine, use the ecl command line tool:
 
-ecl bundle install <bundlefile>.ecl
+ecl bundle install <bundle_url>.git
 
 For complete details, see the Client Tools Manual, available in the download section of hpccsystems.com
 
@@ -33,53 +33,55 @@ For complete details, see the Client Tools Manual, available in the download sec
 Supported bundles
 =================
 
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| ML_Core               | Machine Learning core bundle                 | https://github.com/hpcc-systems/ML_Core              |
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| PBblas                | Parallel BLAS support for machine learning   | https://github.com/hpcc-systems/PBblas               |
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| GLM                   | General Linear Model                         | https://github.com/hpcc-systems/GLM                  |
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| LearningTrees         | Random forest classification and regression  | https://github.com/hpcc-systems/LearningTrees        |                                    
-+-----------------------+----------------------------------------------+------------------------------------------------------+           
-| LinearRegression      | Ordinary Least Squares Linear Regression     | https://github.com/hpcc-systems/LinearRegression     |
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| LogisticRegression    | Logistic Regression classification           | https://github.com/hpcc-systems/LogisticRegression   |
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| SupportVectorMachines | Support Vector Machines                      | https://github.com/hpcc-systems/SupportVectorMachines| 
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| DataPatterns          + Data profiling tool                          | https://github.com/hpcc-systems/DataPatterns         +
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| PerformanceTesting    | Performance test suite                       | https://github.com/hpcc-systems/PerformanceTesting   |          
-+-----------------------+----------------------------------------------+------------------------------------------------------+
-| Visualizer            | HPCC Visualizations support                  | https://github.com/hpcc-systems/Visualizer           |        
-+-----------------------+----------------------------------------------+------------------------------------------------------+
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| ML_Core               | Machine Learning core bundle                      | https://github.com/hpcc-systems/ML_Core               |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| PBblas                | Parallel BLAS support for machine learning        | https://github.com/hpcc-systems/PBblas                |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| GLM                   | General Linear Model                              | https://github.com/hpcc-systems/GLM                   |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| LearningTrees         | Random forest classification and regression       | https://github.com/hpcc-systems/LearningTrees         |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| LinearRegression      | Ordinary Least Squares Linear Regression          | https://github.com/hpcc-systems/LinearRegression      |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| LogisticRegression    | Logistic Regression classification                | https://github.com/hpcc-systems/LogisticRegression    |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| SupportVectorMachines | Support Vector Machines                           | https://github.com/hpcc-systems/SupportVectorMachines |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| DataPatterns          | Data profiling tool                               | https://github.com/hpcc-systems/DataPatterns          |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| PerformanceTesting    | Performance test suite                            | https://github.com/hpcc-systems/PerformanceTesting    |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| Visualizer            | HPCC Visualizations support                       | https://github.com/hpcc-systems/Visualizer            |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
 
 Approved bundles
 ================
 
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| Bloom               | Bloom filter support                           | https://github.com/hpcc-systems/Bloom               |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| CellFormatter       | Format ECL data for display                    | https://github.com/hpcc-systems/CellFormatter       |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| MySqlImport         | Import schemas from MySQL                      | https://github.com/hpcc-systems/MySqlImport         |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| StringMatch         | Various string matching algorithms             | https://github.com/hpcc-systems/StringMatch         |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| Trigram             | Trigram manipulation                           | https://github.com/hpcc-systems/Trigram             |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| Bloom                 | Bloom filter support                              | https://github.com/hpcc-systems/Bloom                 |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| CellFormatter         | Format ECL data for display                       | https://github.com/hpcc-systems/CellFormatter         |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| DataMgmt              | Generational data mgmt; live ROXIE query updates  | https://github.com/hpcc-systems/DataMgmt              |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| MySqlImport           | Import schemas from MySQL                         | https://github.com/hpcc-systems/MySqlImport           |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| StringMatch           | Various string matching algorithms                | https://github.com/hpcc-systems/StringMatch           |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| Trigram               | Trigram manipulation                              | https://github.com/hpcc-systems/Trigram               |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
 
 Other bundles
 =============
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| Finance Library     | Commonly used financial operations             | https://github.com/JamesDeFabia/FinanceLibrary      |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| PrefixTree          | Improves Levenshtein edit distance performance | https://github.com/Charles-Kaminski/PrefixTree      |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| File Management     | Manages the promotion of a set of files        | https://github.com/johnholt/File_Management         |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| Dapper              | Turns verbose ECL calls into simple verbs      | https://github.com/OdinProAgrica/dapper             |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
-| Sassy               | ECL helper for SAS calls                       | https://github.com/lpezet/SASsy                     |
-+---------------------+------------------------------------------------+-----------------------------------------------------+
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| Finance Library       | Commonly used financial operations                | https://github.com/JamesDeFabia/FinanceLibrary        |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| PrefixTree            | Improves Levenshtein edit distance performance    | https://github.com/Charles-Kaminski/PrefixTree        |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| File Management       | Manages the promotion of a set of files           | https://github.com/johnholt/File_Management           |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| Dapper                | Turns verbose ECL calls into simple verbs         | https://github.com/OdinProAgrica/dapper               |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
+| Sassy                 | ECL helper for SAS calls                          | https://github.com/lpezet/SASsy                       |
++-----------------------+---------------------------------------------------+-------------------------------------------------------+
