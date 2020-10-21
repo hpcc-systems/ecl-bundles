@@ -75,11 +75,11 @@ Approved bundles
 Other bundles
 =============
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| Finance Library       | Commonly used financial operations                | https://github.com/JamesDeFabia/FinanceLibrary        |
+| FinanceLibrary        | Commonly used financial operations                | https://github.com/JamesDeFabia/FinanceLibrary        |
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
 | PrefixTree            | Improves Levenshtein edit distance performance    | https://github.com/Charles-Kaminski/PrefixTree        |
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| File Management       | Manages the promotion of a set of files           | https://github.com/johnholt/File_Management           |
+| File_Management       | Manages the promotion of a set of files           | https://github.com/johnholt/File_Management           |
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
 | Dapper                | Turns verbose ECL calls into simple verbs         | https://github.com/OdinProAgrica/dapper               |
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
@@ -87,5 +87,5 @@ Other bundles
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
 | DataPull              | Inter-cluster data replication                    | https://github.com/dcamper/DataPull                   |
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| GPU Deep Learning     | GPU Accelerated Deep Learning                     | https://github.com/hpcc-systems/GPU-Deep-Learning     |
+| GPU-Deep-Learning     | GPU Accelerated Deep Learning                     | https://github.com/hpcc-systems/GPU-Deep-Learning     |
 +-----------------------+---------------------------------------------------+-------------------------------------------------------+
