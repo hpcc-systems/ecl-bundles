@@ -3,7 +3,12 @@ ECL bundles repository
 
 This repository serves as a central list of all known ECL bundles.
 
-Bundles listed here fall into three categories:
+Bundles listed here fall into four categories:
+
+Machine Learning bundles
+  are maintained by the HPCC platform team, and tested against each release.
+  See https://hpccsystems.com/download/free-modules/machine-learning-library
+  for additional information.
 
 Supported bundles
   are maintained by the HPCC platform team, and tested against each release.
@@ -30,30 +35,43 @@ For complete details, see the Client Tools Manual, available in the download sec
 
 .. _`Ecl Bundle Writer's Guide`: https://github.com/hpcc-systems/HPCC-Platform/blob/master/ecl/ecl-bundle/BUNDLES.rst
 
+Machine Learning bundles
+========================
+
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| ML_Core                     | Machine Learning core bundle                                | https://github.com/hpcc-systems/ML_Core               |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| PBblas                      | Parallel BLAS support for machine learning                  | https://github.com/hpcc-systems/PBblas                |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| LinearRegression            | Ordinary Least Squares Linear Regression                    | https://github.com/hpcc-systems/LinearRegression      |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| LogisticRegression          | Logistic Regression classification                          | https://github.com/hpcc-systems/LogisticRegression    |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| GLM                         | General Linear Model                                        | https://github.com/hpcc-systems/GLM                   |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| SupportVectorMachines       | Support Vector Machines                                     | https://github.com/hpcc-systems/SupportVectorMachines |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| LearningTrees               | Random forest classification and regression                 | https://github.com/hpcc-systems/LearningTrees         |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| Generalized Neural Networks | Parallelized interace to Keras / Tensorflow                 | https://github.com/hpcc-systems/GNN                   |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| K-Means                     | Unsupervised Clustering Algorith                            | https://github.com/hpcc-systems/KMeans                |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| DBSCAN                      | Unsupervised Density-based Clustering Algorithm             | https://github.com/hpcc-systems/dbscan                |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| Text Vectors                | Unsupervised vectorization of words, phrases, and sentences | https://github.com/hpcc-systems/TextVectors           |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+
 Supported bundles
 =================
 
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| ML_Core               | Machine Learning core bundle                      | https://github.com/hpcc-systems/ML_Core               |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| PBblas                | Parallel BLAS support for machine learning        | https://github.com/hpcc-systems/PBblas                |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| GLM                   | General Linear Model                              | https://github.com/hpcc-systems/GLM                   |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| LearningTrees         | Random forest classification and regression       | https://github.com/hpcc-systems/LearningTrees         |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| LinearRegression      | Ordinary Least Squares Linear Regression          | https://github.com/hpcc-systems/LinearRegression      |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| LogisticRegression    | Logistic Regression classification                | https://github.com/hpcc-systems/LogisticRegression    |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| SupportVectorMachines | Support Vector Machines                           | https://github.com/hpcc-systems/SupportVectorMachines |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| DataPatterns          | Data profiling tool                               | https://github.com/hpcc-systems/DataPatterns          |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| PerformanceTesting    | Performance test suite                            | https://github.com/hpcc-systems/PerformanceTesting    |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
-| Visualizer            | HPCC Visualizations support                       | https://github.com/hpcc-systems/Visualizer            |
-+-----------------------+---------------------------------------------------+-------------------------------------------------------+
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| DataPatterns                | Data profiling tool                                         | https://github.com/hpcc-systems/DataPatterns          |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| PerformanceTesting          | Performance test suite                                      | https://github.com/hpcc-systems/PerformanceTesting    |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| Visualizer                  | HPCC Visualizations support                                 | https://github.com/hpcc-systems/Visualizer            |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
 
 Approved bundles
 ================
