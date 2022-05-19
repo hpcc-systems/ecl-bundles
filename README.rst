@@ -61,6 +61,8 @@ Machine Learning bundles
 +-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
 | Text Vectors                | Unsupervised vectorization of words, phrases, and sentences | https://github.com/hpcc-systems/TextVectors           |
 +-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
+| HPCC_Causality              | Causal Analyisis, Probability, and Synthetic Data Gen       | https://github.com/hpcc-systems/HPCC_Causality        |
++-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
 
 Supported bundles
 =================
