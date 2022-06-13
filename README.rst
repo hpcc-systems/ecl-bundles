@@ -38,29 +38,31 @@ For complete details, see the Client Tools Manual, available in the download sec
 Machine Learning bundles
 ========================
 
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| ML_Core                     | Machine Learning core bundle                                | https://github.com/hpcc-systems/ML_Core               |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| PBblas                      | Parallel BLAS support for machine learning                  | https://github.com/hpcc-systems/PBblas                |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| LinearRegression            | Ordinary Least Squares Linear Regression                    | https://github.com/hpcc-systems/LinearRegression      |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| LogisticRegression          | Logistic Regression classification                          | https://github.com/hpcc-systems/LogisticRegression    |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| GLM                         | General Linear Model                                        | https://github.com/hpcc-systems/GLM                   |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| SupportVectorMachines       | Support Vector Machines                                     | https://github.com/hpcc-systems/SupportVectorMachines |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| LearningTrees               | Random forest classification and regression                 | https://github.com/hpcc-systems/LearningTrees         |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| Generalized Neural Networks | Parallelized interace to Keras / Tensorflow                 | https://github.com/hpcc-systems/GNN                   |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| K-Means                     | Unsupervised Clustering Algorith                            | https://github.com/hpcc-systems/KMeans                |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| DBSCAN                      | Unsupervised Density-based Clustering Algorithm             | https://github.com/hpcc-systems/dbscan                |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
-| Text Vectors                | Unsupervised vectorization of words, phrases, and sentences | https://github.com/hpcc-systems/TextVectors           |
-+-----------------------------+-------------------------------------------------------------+-------------------------------------------------------+
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| ML_Core                     | Machine Learning core bundle                                | https://github.com/hpcc-systems/ML_Core                       |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| PBblas                      | Parallel BLAS support for machine learning                  | https://github.com/hpcc-systems/PBblas                        |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| LinearRegression            | Ordinary Least Squares Linear Regression                    | https://github.com/hpcc-systems/LinearRegression              |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| GaussianProcessRegression   | RFF-accelerated Gaussian Process Regression                 | https://github.com/hpcc-systems/GaussianProcessRegression.git |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| LogisticRegression          | Logistic Regression classification                          | https://github.com/hpcc-systems/LogisticRegression            |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| GLM                         | General Linear Model                                        | https://github.com/hpcc-systems/GLM                           |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| SupportVectorMachines       | Support Vector Machines                                     | https://github.com/hpcc-systems/SupportVectorMachines         |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| LearningTrees               | Random forest classification and regression                 | https://github.com/hpcc-systems/LearningTrees                 |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| Generalized Neural Networks | Parallelized interace to Keras / Tensorflow                 | https://github.com/hpcc-systems/GNN                           |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| K-Means                     | Unsupervised Clustering Algorith                            | https://github.com/hpcc-systems/KMeans                        |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| DBSCAN                      | Unsupervised Density-based Clustering Algorithm             | https://github.com/hpcc-systems/dbscan                        |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
+| Text Vectors                | Unsupervised vectorization of words, phrases, and sentences | https://github.com/hpcc-systems/TextVectors                   |
++-----------------------------+-------------------------------------------------------------+---------------------------------------------------------------+
 
 Supported bundles
 =================
